@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #F8FAFC;
+    --text-primary: #0B1C30;
+    --card-bg: #FFFFFF;
+    --card-border: #E2E8F0;
+    --primary-blue: #0B2545;
+    --accent-teal: #00A896;
+  }
+
+  .dark {
+    --bg-primary: #0A1120;
+    --text-primary: #F8FAFC;
+    --card-bg: #131F37;
+    --card-border: #1E293B;
+    --primary-blue: #133E87;
+    --accent-teal: #00A896;
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+
+  /* Accessible touch targets */
+  button, a, input, select {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+}
+
+/* Priority animations */
+@keyframes slideDownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes badgePop {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-badge-pop {
+  animation: badgePop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.animate-slide-down {
+  animation: slideDownFade 0.25s ease-out forwards;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(226, 232, 240, 0.6) 25%, rgba(241, 245, 249, 0.9) 50%, rgba(226, 232, 240, 0.6) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dark .skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(30, 45, 74, 0.6) 25%, rgba(45, 65, 100, 0.9) 50%, rgba(30, 45, 74, 0.6) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
