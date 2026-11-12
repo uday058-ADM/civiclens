@@ -31,12 +31,12 @@ export const BottomNav: React.FC<BottomNavProps> = ({
     { key: 'queue' as TabKey, label: 'Cluster', icon: ListOrdered, badge: queueCount },
     { key: 'rewards' as TabKey, label: 'Rewards', icon: Gift, coinBadge: `${userCoins}` },
     { key: 'map' as TabKey, label: 'Map', icon: MapPin },
-    { key: 'dispatch' as TabKey, label: 'Dispatch', icon: Truck },
+    { key: 'dispatch' as TabKey, label: 'Works', icon: Truck },
     { key: 'about' as TabKey, label: 'Stats', icon: BarChart3 },
   ];
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#0B1528]/95 backdrop-blur-xl border-t border-slate-800 z-40 px-2 flex items-center justify-around shadow-2xl">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 dark:bg-[#0B1528]/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 z-40 px-2 flex items-center justify-around shadow-2xl transition-colors duration-300">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.key;
@@ -47,13 +47,13 @@ export const BottomNav: React.FC<BottomNavProps> = ({
             onClick={() => onTabChange(tab.key)}
             className={`flex flex-col items-center justify-center flex-1 h-full relative transition-all ${
               isActive
-                ? 'text-amber-400 font-extrabold'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'text-amber-500 dark:text-amber-400 font-extrabold'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
             {tab.highlight ? (
               <div
-                className={`w-11 h-11 -mt-5 rounded-full flex items-center justify-center shadow-xl transition-transform border-2 border-slate-900 ${
+                className={`w-11 h-11 -mt-5 rounded-full flex items-center justify-center shadow-xl transition-transform border-2 border-white dark:border-slate-900 ${
                   isActive
                     ? 'bg-amber-500 text-slate-950 scale-110 shadow-amber-500/30'
                     : 'bg-amber-500 text-slate-950'

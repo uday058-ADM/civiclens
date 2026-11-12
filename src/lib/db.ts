@@ -14,9 +14,9 @@ export function calculateDistanceMeters(
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+    Math.cos((lat2 * Math.PI) / 180) *
+    Math.sin(dLon / 2) *
+    Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
@@ -112,12 +112,12 @@ export const initialHazards: HazardReport[] = [
     road_type: 'Transit Corridor',
     traffic_level: 'Extreme',
     images: [
-      'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1584463699039-4d04847bf317?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1576085898323-2183ba9b2203?auto=format&fit=crop&w=800&q=80',
     ],
     photos: [
-      'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1584463699039-4d04847bf317?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1576085898323-2183ba9b2203?auto=format&fit=crop&w=800&q=80',
     ],
     after_repair_images: [],
     assigned_crew: 'Ward 18 Rapid Action Road Crew Alpha',
@@ -187,10 +187,12 @@ export const initialHazards: HazardReport[] = [
     road_type: 'Transit Corridor',
     traffic_level: 'Extreme',
     images: [
-      'https://images.unsplash.com/photo-1578991624414-276ef23a534f?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1597393353415-b3730f3719fe?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584713508709-639a85867350?auto=format&fit=crop&w=800&q=80',
     ],
     photos: [
-      'https://images.unsplash.com/photo-1578991624414-276ef23a534f?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1597393353415-b3730f3719fe?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584713508709-639a85867350?auto=format&fit=crop&w=800&q=80',
     ],
     after_repair_images: [],
     assigned_crew: 'Zone-V Heavy Industrial Maintenance Unit',
@@ -241,10 +243,10 @@ export const initialHazards: HazardReport[] = [
     road_type: 'Arterial',
     traffic_level: 'High',
     images: [
-      'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584463699039-4d04847bf317?auto=format&fit=crop&w=800&q=80',
     ],
     photos: [
-      'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584463699039-4d04847bf317?auto=format&fit=crop&w=800&q=80',
     ],
     after_repair_images: [],
     assigned_crew: 'Ward 31 Civil Repair Unit',
@@ -294,10 +296,10 @@ export const initialHazards: HazardReport[] = [
     road_type: 'Arterial',
     traffic_level: 'High',
     images: [
-      'https://images.unsplash.com/photo-1584463699039-4d04847bf317?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=800&q=80',
     ],
     photos: [
-      'https://images.unsplash.com/photo-1584463699039-4d04847bf317?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=800&q=80',
     ],
     after_repair_images: [],
     assigned_crew: 'MVP Sector Engineering Squad',
@@ -348,10 +350,12 @@ export const initialHazards: HazardReport[] = [
     road_type: 'Sub-arterial',
     traffic_level: 'Moderate',
     images: [
-      'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1597393353415-b3730f3719fe?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584713508709-639a85867350?auto=format&fit=crop&w=800&q=80',
     ],
     photos: [
-      'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1597393353415-b3730f3719fe?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1584713508709-639a85867350?auto=format&fit=crop&w=800&q=80',
     ],
     after_repair_images: [],
     assigned_crew: 'Zone-IV Maintenance Team',
@@ -474,7 +478,7 @@ class HazardDatabase {
       });
 
       // Dual-Mode Sync: Firestore + Local Mesh Broadcast
-      syncHazardToFirestore(nearby).catch(() => {});
+      syncHazardToFirestore(nearby).catch(() => { });
       localMesh.broadcast(this.hazards);
 
       return {
@@ -546,7 +550,7 @@ class HazardDatabase {
     this.hazards.unshift(newHazard);
 
     // Dual-Mode Sync: Firestore + Local Mesh Broadcast
-    syncHazardToFirestore(newHazard).catch(() => {});
+    syncHazardToFirestore(newHazard).catch(() => { });
     localMesh.broadcast(this.hazards);
 
     return {
@@ -595,7 +599,7 @@ class HazardDatabase {
     }
 
     // Dual-Mode Sync: Firestore + Local Mesh Broadcast
-    syncHazardToFirestore(hazard).catch(() => {});
+    syncHazardToFirestore(hazard).catch(() => { });
     localMesh.broadcast(this.hazards);
 
     return hazard;

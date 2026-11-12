@@ -16,12 +16,14 @@ import { HazardReport, HazardStatus, UserRole } from '@/types';
 import { initialHazards } from '@/lib/db';
 import { getOfflineReports, registerAutoSync } from '@/lib/offlineQueue';
 
+import { LoginPage } from '@/components/LoginPage';
+
 export default function CivicLensHome() {
   const [hazards, setHazards] = useState<HazardReport[]>(initialHazards);
-  const [activeTab, setActiveTab] = useState<TabKey>('about'); // Default to About & Stats matching screenshot or user preference
-  const [role, setRole] = useState<UserRole>('citizen');
-  const [darkMode, setDarkMode] = useState<boolean>(true); // Match high-tech dark theme in screenshot
-  const [userCoins, setUserCoins] = useState<number>(840); // 840 PTS matching screenshot
+  const [activeTab, setActiveTab] = useState<TabKey>('upload');
+  const [role, setRole] = useState<UserRole | null>(null); // Start as null for login
+  const [darkMode, setDarkMode] = useState<boolean>(true);
+  const [userCoins, setUserCoins] = useState<number>(840);
   const [language, setLanguage] = useState<'EN' | 'TEL'>('EN');
   const [selectedHazard, setSelectedHazard] = useState<HazardReport | null>(null);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -32,6 +34,12 @@ export default function CivicLensHome() {
       document.documentElement.classList.add('dark');
     }
   }, []);
+
+  const handleLogin = (selectedRole: 'citizen' | 'engineer') => {
+    setRole(selectedRole);
+    setActiveTab('upload');
+    showToast(`Welcome! Logged in as ${selectedRole === 'citizen' ? 'Citizen' : 'Government Officer'}`, 'success');
+  };
 
   const handleToggleDarkMode = () => {
     setDarkMode((prev) => {
@@ -291,8 +299,12 @@ export default function CivicLensHome() {
 
   const queueCount = hazards.filter((h) => h.status !== 'Fixed').length;
 
+  if (!role) {
+    return <LoginPage onLogin={handleLogin} />;
+  }
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#070D19] dark:bg-[#070D19] text-slate-100 transition-colors">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#070D19] text-slate-900 dark:text-slate-100 transition-colors duration-300">
       {/* Top Header */}
       <Header
         role={role}
@@ -324,6 +336,7 @@ export default function CivicLensHome() {
               onShowToast={showToast}
               onNavigateToRewards={() => setActiveTab('rewards')}
               userCoins={userCoins}
+              language={language}
             />
           )}
 
@@ -333,6 +346,7 @@ export default function CivicLensHome() {
               onSelectHazard={(h) => setSelectedHazard(h)}
               onRefresh={fetchHazards}
               onShowToast={showToast}
+              role={role}
             />
           )}
 
@@ -364,7 +378,7 @@ export default function CivicLensHome() {
           )}
 
           {activeTab === 'about' && (
-            <AboutTab onClearAppData={handleClearAppData} />
+            <AboutTab onClearAppData={handleClearAppData} language={language} />
           )}
         </main>
       </div>

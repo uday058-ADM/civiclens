@@ -16,13 +16,14 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabaseClient';
-import { HazardReport } from '@/types';
+import { HazardReport, UserRole } from '@/types';
 
 export interface LiveQueueTabProps {
   hazards?: HazardReport[];
   onSelectHazard?: (hazard: any) => void;
   onRefresh?: () => void;
   onShowToast?: (msg: string, type?: 'success' | 'error' | 'info') => void;
+  role?: UserRole;
 }
 
 export const LiveQueueTab: React.FC<LiveQueueTabProps> = ({
@@ -238,7 +239,10 @@ export const LiveQueueTab: React.FC<LiveQueueTabProps> = ({
                         <span className="text-[10px] text-slate-500 block uppercase font-bold">
                           Risk
                         </span>
-                        <span className="text-sm font-black text-amber-400 font-mono">
+                        <span className={`text-sm font-black font-mono ${severity === 'Critical' ? 'text-red-500' :
+                            severity === 'High' ? 'text-orange-500' :
+                              'text-amber-400'
+                          }`}>
                           {riskScore}
                         </span>
                       </div>

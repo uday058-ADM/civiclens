@@ -14,6 +14,8 @@ import {
   ArrowUpRight,
   ShieldCheck,
   Building2,
+  Bike,
+  PiggyBank,
 } from 'lucide-react';
 import { HazardReport } from '@/types';
 
@@ -233,6 +235,31 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
           <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
             <span>Red segment: Immediate two-wheeler hazards</span>
             <span>Amber segment: Maintenance priority</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Societal Impact & Pilot Economics Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="bg-[#0B1528] p-6 rounded-2xl border border-slate-800 shadow-md flex items-start justify-between gap-4">
+          <div className="space-y-2">
+            <div className="text-4xl font-black text-amber-400 font-headline leading-none">44%+</div>
+            <div className="text-base font-bold text-white">Fatalities are two-wheeler riders</div>
+            <div className="text-xs text-slate-400 font-medium">Delivery gig riders bear maximum surface hazard risk</div>
+          </div>
+          <div className="w-12 h-12 rounded-2xl bg-amber-950/60 border border-amber-800/60 flex items-center justify-center text-amber-400 shrink-0">
+            <Bike className="w-6 h-6" />
+          </div>
+        </div>
+
+        <div className="bg-[#0B1528] p-6 rounded-2xl border border-slate-800 shadow-md flex items-start justify-between gap-4">
+          <div className="space-y-2">
+            <div className="text-4xl font-black text-teal-400 font-headline leading-none">₹3,50,000</div>
+            <div className="text-base font-bold text-white">6-Month Pilot SaaS Model</div>
+            <div className="text-xs text-slate-400 font-medium">Full coverage across 100 km GVMC arterial road network</div>
+          </div>
+          <div className="w-12 h-12 rounded-2xl bg-teal-950/60 border border-teal-800/60 flex items-center justify-center text-teal-400 shrink-0">
+            <PiggyBank className="w-6 h-6" />
           </div>
         </div>
       </div>

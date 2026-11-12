@@ -126,3 +126,13 @@
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
+
+/* AI scanning line sweep */
+@keyframes scan {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(320px);
+  }
+}

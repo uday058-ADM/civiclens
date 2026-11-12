@@ -6,7 +6,19 @@ export type HazardStatus = 'Reported' | 'Verified' | 'Assigned' | 'In Progress' 
 
 export type ScaleReference = 'no_reference' | 'coin_10' | 'a4_sheet';
 
-export type DefectType = 'Pothole' | 'Sunken Manhole' | 'Pavement Fracture' | 'Edge Drop-off' | 'None';
+export type DefectType =
+  | 'Pothole'
+  | 'Road Crack'
+  | 'Damaged Road Surface'
+  | 'Waterlogging'
+  | 'Open Manhole'
+  | 'Road Obstruction'
+  | 'Normal Road Condition'
+  | 'Inconclusive'
+  | 'Sunken Manhole'
+  | 'Pavement Fracture'
+  | 'Edge Drop-off'
+  | 'None';
 
 export interface ActivityLog {
   id: string;
@@ -63,14 +75,19 @@ export interface HazardReport {
 
 export interface GeminiAnalysisResult {
   is_hazard: boolean;
+  detected_condition: string;
   defect_type: DefectType;
   width_cm: number;
   depth_cm: number;
   confidence: number;
-  severity_level: SeverityLevel;
+  severity_level: 'Critical' | 'High' | 'Medium' | 'Low' | 'None';
   base_risk_score: number; // 0 to 100
+  explanation: string;
   why_ranked_here: string; // Concise engineering justification
+  recommended_action: string;
+  is_inconclusive?: boolean;
   scale_reference_used?: ScaleReference;
+  error?: string;
 }
 
 export interface OfflineReport {
