@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   MapPin,
   Navigation,
@@ -15,25 +15,79 @@ import {
   Users,
 } from 'lucide-react';
 import { HazardReport } from '@/types';
+import {
+  acquireBestGpsFix,
+  formatAccuracyMeters,
+  GPS_TARGET_ACCURACY_METERS,
+} from '@/lib/geolocation';
 
 interface MapTabProps {
   hazards: HazardReport[];
   onSelectHazard: (hazard: HazardReport) => void;
   onShowToast: (msg: string, type?: 'success' | 'error' | 'info') => void;
+  onLocationChange?: (location: { lat: number; lng: number; accuracy: number }) => void;
+  location?: { lat: number; lng: number; accuracy: number } | null;
 }
 
 export const MapTab: React.FC<MapTabProps> = ({
   hazards,
   onSelectHazard,
   onShowToast,
+  onLocationChange,
+  location,
 }) => {
   const [selectedPin, setSelectedPin] = useState<HazardReport | null>(hazards[0] || null);
   const [trafficDensityActive, setTrafficDensityActive] = useState(true);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [selectedWardFilter, setSelectedWardFilter] = useState('all');
+  const [isLocating, setIsLocating] = useState(false);
+  const gpsAcquisitionCancelRef = useRef<(() => void) | null>(null);
+  const userMapPoint = location
+    ? {
+        left: `${Math.max(2, Math.min(82, ((location.lng - 83.18) / 0.24) * 82))}%`,
+        top: `${Math.max(2, Math.min(90, ((17.85 - location.lat) / 0.2) * 90))}%`,
+      }
+    : null;
+
+  useEffect(() => () => gpsAcquisitionCancelRef.current?.(), []);
 
   const handleLocateMe = () => {
-    onShowToast('GPS locked: 17.7211° N, 83.3155° E (Siripuram Junction)', 'success');
+    if (isLocating) return;
+    if (!navigator.geolocation) {
+      onShowToast('This browser does not support location access.', 'error');
+      return;
+    }
+
+    setIsLocating(true);
+    gpsAcquisitionCancelRef.current = acquireBestGpsFix(
+      () => {},
+      (currentLocation) => {
+        gpsAcquisitionCancelRef.current = null;
+        onLocationChange?.(currentLocation);
+        setIsLocating(false);
+        const reachedTarget = currentLocation.accuracy <= GPS_TARGET_ACCURACY_METERS;
+        onShowToast(
+          reachedTarget
+            ? `GPS fix reached the 3 m target (±${formatAccuracyMeters(currentLocation.accuracy)}m).`
+            : `Best GPS fix captured (±${formatAccuracyMeters(currentLocation.accuracy)}m); the device did not reach 3 m.`,
+          reachedTarget ? 'success' : 'info',
+        );
+      },
+      (error) => {
+        gpsAcquisitionCancelRef.current = null;
+        setIsLocating(false);
+        onShowToast(
+          error === 'permission-denied'
+            ? 'Location permission denied. Allow location access in browser settings and try again.'
+            : error === 'timeout'
+              ? 'No GPS fix was received within 30 seconds. Check device location settings and try again.'
+              : error === 'unsupported'
+                ? 'This browser does not support location access.'
+                : 'Unable to get your location. Check device location settings and try again.',
+          'error'
+        );
+      },
+    );
   };
 
   const handleZoomIn = () => {
@@ -110,10 +164,11 @@ export const MapTab: React.FC<MapTabProps> = ({
           {/* Viewport controls */}
           <button
             onClick={handleLocateMe}
+            disabled={isLocating}
             className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-amber-500 transition-colors"
-            title="Center on My Location"
+            title={isLocating ? 'Getting your location...' : 'Use my current GPS location'}
           >
-            <Navigation className="w-4 h-4" />
+            <Navigation className={`w-4 h-4 ${isLocating ? 'animate-pulse' : ''}`} />
           </button>
           <button
             onClick={handleZoomIn}
@@ -297,7 +352,24 @@ export const MapTab: React.FC<MapTabProps> = ({
               </div>
             );
           })}
+
+          {userMapPoint && (
+            <div
+              className="absolute z-30 -translate-x-1/2 -translate-y-1/2"
+              style={userMapPoint}
+              title={`Your current location: ${location?.lat.toFixed(6)}, ${location?.lng.toFixed(6)} (±${formatAccuracyMeters(location?.accuracy || 0)}m)`}
+            >
+              <span className="absolute -inset-2 rounded-full bg-sky-400/30 animate-ping" />
+              <span className="relative block w-4 h-4 rounded-full bg-sky-400 border-2 border-white shadow-[0_0_16px_rgba(56,189,248,0.9)]" />
+            </div>
+          )}
         </div>
+
+        {location && (
+          <div className="absolute top-3 left-3 z-30 rounded-lg bg-[#0B1528]/95 border border-sky-500/40 px-3 py-2 text-[10px] text-sky-200 font-mono">
+            GPS: {location.lat.toFixed(6)}, {location.lng.toFixed(6)} (±{formatAccuracyMeters(location.accuracy)}m)
+          </div>
+        )}
 
         {/* Legend */}
         <div className="absolute bottom-3 left-3 z-30 bg-[#0B1528]/95 backdrop-blur-md p-3 rounded-xl border border-slate-700 shadow-xl text-xs text-white max-w-[210px]">

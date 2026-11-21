@@ -41,7 +41,7 @@ export const AboutTab: React.FC<AboutTabProps> = ({ onClearAppData, language = '
               {t.VIZAG_LOCATION}
             </span>
             <span className="px-4 py-1.5 rounded-full text-[10px] font-black tracking-[0.2em] text-teal-400 uppercase">
-              Digital Governance Bridge
+              {t.DIGITAL_GOVERNANCE_BRIDGE}
             </span>
           </div>
         </div>
@@ -56,7 +56,7 @@ export const AboutTab: React.FC<AboutTabProps> = ({ onClearAppData, language = '
               <span>{t.THE_MISSION}</span>
             </div>
             <h3 className="text-4xl font-black text-slate-900 dark:text-white leading-tight">
-              Transforming Civic <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-teal-400">Responsibility</span> Into Action.
+              {t.CIVIC_RESPONSIBILITY_ACTION}
             </h3>
             <p className="text-lg text-slate-400 leading-relaxed font-medium">
               {t.MISSION_TEXT}
@@ -71,15 +71,15 @@ export const AboutTab: React.FC<AboutTabProps> = ({ onClearAppData, language = '
               <div className="w-12 h-12 rounded-2xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400 group-hover:scale-110 transition-transform">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h4 className="text-xl font-black text-slate-900 dark:text-white">Direct Impact</h4>
-              <p className="text-xs text-slate-500 leading-relaxed font-medium">Your reports go directly to ward engineers, bypassing bureaucratic delays.</p>
+              <h4 className="text-xl font-black text-slate-900 dark:text-white">{t.DIRECT_IMPACT}</h4>
+              <p className="text-xs text-slate-500 leading-relaxed font-medium">{t.DIRECT_IMPACT_DESC}</p>
             </div>
             <div className="p-8 rounded-[2rem] bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 space-y-4 hover:bg-white/10 transition-all duration-500 group">
               <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
                 <Sparkles className="w-6 h-6" />
               </div>
-              <h4 className="text-xl font-black text-slate-900 dark:text-white">XP Rewards</h4>
-              <p className="text-xs text-slate-500 leading-relaxed font-medium">Earn Civic XP for every verified report and redeem them for community coupons.</p>
+              <h4 className="text-xl font-black text-slate-900 dark:text-white">{t.XP_REWARDS}</h4>
+              <p className="text-xs text-slate-500 leading-relaxed font-medium">{t.XP_REWARDS_DESC}</p>
             </div>
           </div>
         </div>
@@ -88,7 +88,7 @@ export const AboutTab: React.FC<AboutTabProps> = ({ onClearAppData, language = '
       {/* 3. HERO STATISTICS (Matching 1st Photo Style) */}
       <section className="space-y-6">
         <div className="flex items-center justify-between px-4">
-          <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-500">Global Impact Metrics</h4>
+          <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-500">{t.GLOBAL_IMPACT_METRICS}</h4>
           <div className="h-px flex-1 bg-slate-100 dark:bg-white/5 mx-8"></div>
         </div>
 
@@ -110,7 +110,7 @@ export const AboutTab: React.FC<AboutTabProps> = ({ onClearAppData, language = '
               <div className="text-6xl font-black font-headline text-amber-500 tracking-tighter">96.4%</div>
               <div className="space-y-2">
                 <div className="text-base font-bold text-slate-200 leading-snug">{t.ACCURACY}</div>
-                <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest">AI Verification Engine</div>
+                <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest">{t.AI_VERIFICATION_ENGINE}</div>
               </div>
             </div>
           </div>
@@ -121,7 +121,7 @@ export const AboutTab: React.FC<AboutTabProps> = ({ onClearAppData, language = '
               <div className="text-6xl font-black font-headline text-teal-400 tracking-tighter">8.9:1</div>
               <div className="space-y-2">
                 <div className="text-base font-bold text-slate-200 leading-snug">{t.DEDUPLICATION}</div>
-                <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest">Signal Noise Reduction</div>
+                <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest">{t.SIGNAL_NOISE_REDUCTION}</div>
               </div>
             </div>
           </div>
@@ -132,8 +132,8 @@ export const AboutTab: React.FC<AboutTabProps> = ({ onClearAppData, language = '
           <div className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-amber-950/40 to-slate-900 border border-amber-800/40 p-8 flex items-start justify-between gap-4">
             <div className="space-y-2">
               <div className="text-5xl font-black text-amber-400 font-headline leading-none">44%+</div>
-              <div className="text-lg font-bold text-white">Fatalities are two-wheeler riders</div>
-              <div className="text-sm text-slate-400 font-medium">Delivery gig riders bear maximum surface hazard risk</div>
+              <div className="text-lg font-bold text-white">{t.FATALITIES_TWO_WHEELERS}</div>
+              <div className="text-sm text-slate-400 font-medium">{t.GIG_RIDER_RISK}</div>
             </div>
             <div className="w-14 h-14 rounded-2xl bg-amber-950/60 border border-amber-800/60 flex items-center justify-center text-amber-400 shrink-0 group-hover:scale-110 transition-transform">
               <Bike className="w-7 h-7" />
@@ -143,8 +143,8 @@ export const AboutTab: React.FC<AboutTabProps> = ({ onClearAppData, language = '
           <div className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-teal-950/40 to-slate-900 border border-teal-800/40 p-8 flex items-start justify-between gap-4">
             <div className="space-y-2">
               <div className="text-5xl font-black text-teal-400 font-headline leading-none">₹3,50,000</div>
-              <div className="text-lg font-bold text-white">6-Month Pilot SaaS Model</div>
-              <div className="text-sm text-slate-400 font-medium">Full coverage across 100 km GVMC arterial road network</div>
+              <div className="text-lg font-bold text-white">{t.PILOT_SAAS_MODEL}</div>
+              <div className="text-sm text-slate-400 font-medium">{t.NETWORK_COVERAGE}</div>
             </div>
             <div className="w-14 h-14 rounded-2xl bg-teal-950/60 border border-teal-800/60 flex items-center justify-center text-teal-400 shrink-0 group-hover:scale-110 transition-transform">
               <PiggyBank className="w-7 h-7" />
@@ -159,7 +159,7 @@ export const AboutTab: React.FC<AboutTabProps> = ({ onClearAppData, language = '
           <div className="order-2 md:order-1 relative rounded-[2rem] overflow-hidden group">
             <img
               src="https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=800"
-              alt="Community Empowerment"
+              alt={t.COMMUNITY_IMAGE_ALT}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent"></div>
@@ -167,26 +167,26 @@ export const AboutTab: React.FC<AboutTabProps> = ({ onClearAppData, language = '
           <div className="order-1 md:order-2 space-y-6">
             <h3 className="text-3xl font-black text-slate-900 dark:text-white">{t.CITIZEN_USEFULNESS_TITLE}</h3>
             <p className="text-slate-400 leading-relaxed font-medium">
-              CivicLens is built on the principle that local knowledge is the most powerful tool for urban development. When a citizen reports a hazard, they are acting as the eyes and ears of the city, enabling government officials to respond with surgical precision.
+              {t.COMMUNITY_VALUE_DESCRIPTION}
             </p>
             <div className="space-y-4">
               <div className="flex items-center gap-4">
                 <div className="w-8 h-8 rounded-full bg-teal-500/20 flex items-center justify-center text-teal-400 border border-teal-500/30">
                   <Layers className="w-4 h-4" />
                 </div>
-                <p className="text-sm font-bold text-slate-300">Transparent Progress Tracking</p>
+                <p className="text-sm font-bold text-slate-300">{t.TRANSPARENT_PROGRESS}</p>
               </div>
               <div className="flex items-center gap-4">
                 <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 border border-amber-500/30">
                   <Bike className="w-4 h-4" />
                 </div>
-                <p className="text-sm font-bold text-slate-300">Safer Commutes for Everyone</p>
+                <p className="text-sm font-bold text-slate-300">{t.SAFER_COMMUTES}</p>
               </div>
               <div className="flex items-center gap-4">
                 <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 border border-blue-500/30">
                   <Building2 className="w-4 h-4" />
                 </div>
-                <p className="text-sm font-bold text-slate-300">Stronger Government Accountability</p>
+                <p className="text-sm font-bold text-slate-300">{t.GOVERNMENT_ACCOUNTABILITY}</p>
               </div>
             </div>
           </div>

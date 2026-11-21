@@ -81,6 +81,14 @@ export function computeCompositeRiskScore(params: {
   };
 }
 
+const clusterPotholePhotos = [
+  '/cluster-pothole-1.jpg',
+  '/cluster-pothole-2.jpg',
+  '/cluster-pothole-3.jpg',
+  '/cluster-pothole-4.jpg',
+  '/cluster-pothole-5.jpg',
+];
+
 // Initial realistic dataset for Visakhapatnam Wards
 export const initialHazards: HazardReport[] = [
   {
@@ -111,14 +119,8 @@ export const initialHazards: HazardReport[] = [
     progress: 65,
     road_type: 'Transit Corridor',
     traffic_level: 'Extreme',
-    images: [
-      'https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1576085898323-2183ba9b2203?auto=format&fit=crop&w=800&q=80',
-    ],
-    photos: [
-      'https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1576085898323-2183ba9b2203?auto=format&fit=crop&w=800&q=80',
-    ],
+    images: [clusterPotholePhotos[0]],
+    photos: [clusterPotholePhotos[0]],
     after_repair_images: [],
     assigned_crew: 'Ward 18 Rapid Action Road Crew Alpha',
     estimated_asphalt_m3: 1.45,
@@ -186,14 +188,8 @@ export const initialHazards: HazardReport[] = [
     progress: 40,
     road_type: 'Transit Corridor',
     traffic_level: 'Extreme',
-    images: [
-      'https://images.unsplash.com/photo-1597393353415-b3730f3719fe?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1584713508709-639a85867350?auto=format&fit=crop&w=800&q=80',
-    ],
-    photos: [
-      'https://images.unsplash.com/photo-1597393353415-b3730f3719fe?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1584713508709-639a85867350?auto=format&fit=crop&w=800&q=80',
-    ],
+    images: [clusterPotholePhotos[1]],
+    photos: [clusterPotholePhotos[1]],
     after_repair_images: [],
     assigned_crew: 'Zone-V Heavy Industrial Maintenance Unit',
     estimated_asphalt_m3: 2.1,
@@ -242,12 +238,8 @@ export const initialHazards: HazardReport[] = [
     progress: 25,
     road_type: 'Arterial',
     traffic_level: 'High',
-    images: [
-      'https://images.unsplash.com/photo-1584463699039-4d04847bf317?auto=format&fit=crop&w=800&q=80',
-    ],
-    photos: [
-      'https://images.unsplash.com/photo-1584463699039-4d04847bf317?auto=format&fit=crop&w=800&q=80',
-    ],
+    images: [clusterPotholePhotos[2]],
+    photos: [clusterPotholePhotos[2]],
     after_repair_images: [],
     assigned_crew: 'Ward 31 Civil Repair Unit',
     estimated_asphalt_m3: 0.9,
@@ -295,12 +287,8 @@ export const initialHazards: HazardReport[] = [
     progress: 45,
     road_type: 'Arterial',
     traffic_level: 'High',
-    images: [
-      'https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=800&q=80',
-    ],
-    photos: [
-      'https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=800&q=80',
-    ],
+    images: [clusterPotholePhotos[3]],
+    photos: [clusterPotholePhotos[3]],
     after_repair_images: [],
     assigned_crew: 'MVP Sector Engineering Squad',
     estimated_asphalt_m3: 0.75,
@@ -349,14 +337,8 @@ export const initialHazards: HazardReport[] = [
     progress: 10,
     road_type: 'Sub-arterial',
     traffic_level: 'Moderate',
-    images: [
-      'https://images.unsplash.com/photo-1597393353415-b3730f3719fe?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1584713508709-639a85867350?auto=format&fit=crop&w=800&q=80',
-    ],
-    photos: [
-      'https://images.unsplash.com/photo-1597393353415-b3730f3719fe?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1584713508709-639a85867350?auto=format&fit=crop&w=800&q=80',
-    ],
+    images: [clusterPotholePhotos[4]],
+    photos: [clusterPotholePhotos[4]],
     after_repair_images: [],
     assigned_crew: 'Zone-IV Maintenance Team',
     estimated_asphalt_m3: 0.5,
@@ -408,6 +390,7 @@ class HazardDatabase {
   submitReport(params: {
     lat: number;
     lng: number;
+    accuracy?: number;
     ward: string;
     locationName?: string;
     imageData: string;
@@ -514,6 +497,7 @@ class HazardDatabase {
       coordinates: {
         lat: params.lat,
         lng: params.lng,
+        ...(params.accuracy !== undefined && { accuracy: params.accuracy }),
       },
       width_cm: params.width_cm,
       depth_cm: params.depth_cm,

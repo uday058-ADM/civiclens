@@ -14,12 +14,14 @@ import {
   Flag,
 } from 'lucide-react';
 import { TabKey } from './BottomNav';
+import { translations } from '@/lib/i18n';
 
 interface SidebarProps {
   activeTab: TabKey;
   onTabChange: (tab: TabKey) => void;
   queueCount?: number;
   userCoins?: number;
+  language?: 'EN' | 'TEL';
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -27,14 +29,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onTabChange,
   queueCount = 9,
   userCoins = 840,
+  language = 'EN',
 }) => {
+  const t = translations[language];
   const navItems = [
-    { key: 'upload' as TabKey, label: 'Report Hazard', icon: Camera, badge: '+50 Coins', badgeColor: 'bg-amber-500 text-slate-950 font-black' },
-    { key: 'queue' as TabKey, label: 'Cluster Feed', icon: ListOrdered, badge: queueCount, badgeColor: 'bg-red-500 text-white' },
-    { key: 'rewards' as TabKey, label: 'Rewards & Coupons', icon: Gift, badge: `${userCoins} PTS`, badgeColor: 'bg-emerald-600 text-white' },
-    { key: 'map' as TabKey, label: 'Vizag Traffic Map', icon: MapPin },
-    { key: 'dispatch' as TabKey, label: 'Work Orders', icon: Truck },
-    { key: 'about' as TabKey, label: 'About & Stats', icon: BarChart3 },
+    { key: 'upload' as TabKey, label: t.NAV_REPORT, icon: Camera, badge: '+50 Coins', badgeColor: 'bg-amber-500 text-slate-950 font-black' },
+    { key: 'queue' as TabKey, label: t.NAV_CLUSTER, icon: ListOrdered, badge: queueCount, badgeColor: 'bg-red-500 text-white' },
+    { key: 'rewards' as TabKey, label: t.NAV_REWARDS, icon: Gift, badge: `${userCoins} PTS`, badgeColor: 'bg-emerald-600 text-white' },
+    { key: 'map' as TabKey, label: t.NAV_MAP, icon: MapPin },
+    { key: 'dispatch' as TabKey, label: t.NAV_WORKS, icon: Truck },
+    { key: 'about' as TabKey, label: t.NAV_STATS, icon: BarChart3 },
   ];
 
   return (
@@ -45,7 +49,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-pulse" />
             <span className="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-300">
-              Vizag Mesh Live
+              {language === 'TEL' ? 'విశాఖ మెష్ ప్రత్యక్షం' : 'Vizag Mesh Live'}
             </span>
           </div>
           <span className="text-[10px] font-bold text-amber-500 bg-amber-100 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 px-2 py-0.5 rounded-md">
@@ -106,7 +110,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         <div className="flex items-center justify-between text-[11px] text-slate-500 px-1">
-          <span>Smart City Triage</span>
+          <span>{language === 'TEL' ? 'స్మార్ట్ సిటీ పరిశీలన' : 'Smart City Triage'}</span>
           <span className="text-teal-600 dark:text-teal-400 font-bold">96.4% Acc</span>
         </div>
       </div>

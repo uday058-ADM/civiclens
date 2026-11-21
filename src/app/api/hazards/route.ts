@@ -131,6 +131,7 @@ export async function POST(req: NextRequest) {
     const {
       lat,
       lng,
+      accuracy,
       address,
       locationName,
       ward = 'Ward 18 - RK Beach & Pandurangapuram',
@@ -148,6 +149,11 @@ export async function POST(req: NextRequest) {
 
     const finalPhoto = photoUrl || imageData;
     const finalAddress = address || locationName || `${ward}, Visakhapatnam`;
+    const reportedAccuracy = Number(accuracy);
+    const gpsAccuracy =
+      accuracy !== undefined && Number.isFinite(reportedAccuracy) && reportedAccuracy > 0
+        ? reportedAccuracy
+        : undefined;
 
     if (lat === undefined || lng === undefined || !finalPhoto) {
       return NextResponse.json(
@@ -262,6 +268,7 @@ export async function POST(req: NextRequest) {
           const localResult = db.submitReport({
             lat: Number(lat),
             lng: Number(lng),
+            accuracy: gpsAccuracy,
             ward,
             locationName: finalAddress,
             imageData: finalPhoto,
@@ -294,6 +301,7 @@ export async function POST(req: NextRequest) {
     const result = db.submitReport({
       lat: Number(lat),
       lng: Number(lng),
+      accuracy: gpsAccuracy,
       ward,
       locationName: finalAddress,
       imageData: finalPhoto,

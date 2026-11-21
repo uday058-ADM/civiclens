@@ -46,7 +46,123 @@ export type TranslationKey =
   | 'DIRECT_GOVERNANCE_TITLE'
   | 'DIRECT_GOVERNANCE_DESC'
   | 'CITIZEN_USEFULNESS_TITLE'
-  | 'CITIZEN_USEFULNESS_DESC';
+  | 'CITIZEN_USEFULNESS_DESC'
+  | 'LANGUAGE_EN'
+  | 'LANGUAGE_TEL'
+  | 'NAV_REPORT'
+  | 'NAV_CLUSTER'
+  | 'NAV_REWARDS'
+  | 'NAV_MAP'
+  | 'NAV_WORKS'
+  | 'NAV_STATS'
+  | 'LIVE_CLUSTER_FEED'
+  | 'LIVE_CLUSTER_DESC'
+  | 'SYNCED'
+  | 'REFRESH_FEED'
+  | 'SEARCH_LOCATION'
+  | 'ALL_WARDS'
+  | 'WARD_18'
+  | 'WARD_31'
+  | 'WARD_22'
+  | 'WARD_65'
+  | 'ALL_SEVERITIES'
+  | 'CRITICAL_FILTER'
+  | 'HIGH_FILTER'
+  | 'MEDIUM_FILTER'
+  | 'LOW_FILTER'
+  | 'NO_MATCHING_HAZARDS'
+  | 'REPORTS'
+  | 'RISK'
+  | 'WIDTH'
+  | 'DEPTH'
+  | 'JUSTIFICATION_DEPTH'
+  | 'JUSTIFICATION_TRAFFIC'
+  | 'CITIZEN_REPORTS'
+  | 'LIVE_URBAN_TRIAGE'
+  | 'SAMPLE_PROJECTED_DATA'
+  | 'TELEMETRY_SYNCED'
+  | 'TOTAL_HAZARDS'
+  | 'LOGGED_ALL_ZONES'
+  | 'CRITICAL_OPEN'
+  | 'IMMEDIATE_CORDON'
+  | 'BUS_ROUTE_DEPTH'
+  | 'FIXED_THIS_WEEK'
+  | 'VS_LAST_WEEK'
+  | 'RESURFACED_CLOSED'
+  | 'AVG_TRIAGE_TIME'
+  | 'TRIAGE_SPEED'
+  | 'CAPTURE_TO_CREW'
+  | 'DUPLICATES_MERGED'
+  | 'RADIUS_15M'
+  | 'REDUNDANT_TICKETS'
+  | 'RISK_DISTRIBUTION'
+  | 'CURRENT_ACTIVE'
+  | 'TOTAL_SITES'
+  | 'SEVERITY_CRITICAL'
+  | 'SEVERITY_HIGH'
+  | 'SEVERITY_MEDIUM'
+  | 'SEVERITY_LOW'
+  | 'HAZARD_DENSITY_BY_WARD'
+  | 'VULNERABILITY_DESCRIPTION'
+  | 'TOP_FIVE_SECTORS'
+  | 'CRITICAL_COUNT'
+  | 'TOTAL_COUNT'
+  | 'RED_SEGMENT'
+  | 'AMBER_SEGMENT'
+  | 'TWO_WHEELER_RIDERS'
+  | 'DELIVERY_RIDER_RISK'
+  | 'PILOT_SAAS_MODEL'
+  | 'NETWORK_COVERAGE'
+  | 'GLOBAL_IMPACT_METRICS'
+  | 'AI_VERIFICATION_ENGINE'
+  | 'SIGNAL_NOISE_REDUCTION'
+  | 'FATALITIES_TWO_WHEELERS'
+  | 'GIG_RIDER_RISK'
+  | 'DIRECT_IMPACT'
+  | 'DIRECT_IMPACT_DESC'
+  | 'XP_REWARDS'
+  | 'XP_REWARDS_DESC'
+  | 'DIGITAL_GOVERNANCE_BRIDGE'
+  | 'CIVIC_RESPONSIBILITY_ACTION'
+  | 'TRANSPARENT_PROGRESS'
+  | 'SAFER_COMMUTES'
+  | 'GOVERNMENT_ACCOUNTABILITY'
+  | 'PRECISION_LOCATION_REQUIRED'
+  | 'USE_EXACT_GPS'
+  | 'ACQUIRING_GPS'
+  | 'GPS_ACTIVE'
+  | 'GPS_PERMISSION_DENIED'
+  | 'LOCATION_UNAVAILABLE'
+  | 'LOCATION_REQUIRED_TO_REPORT'
+  | 'GPS_CAPTURED'
+  | 'GPS_TIMEOUT'
+  | 'ALLOW_LOCATION_PERMISSION'
+  | 'SEVERITY_LABEL'
+  | 'STATUS_REPORTED'
+  | 'STATUS_VERIFIED'
+  | 'STATUS_ASSIGNED'
+  | 'STATUS_IN_PROGRESS'
+  | 'STATUS_FIXED'
+  | 'DEFECT_POTHOLE'
+  | 'DEFECT_PAVEMENT_FRACTURE'
+  | 'DEFECT_SUNKEN_MANHOLE'
+  | 'TRAFFIC_EXTREME'
+  | 'TRAFFIC_HIGH'
+  | 'TRAFFIC_MODERATE'
+  | 'TRAFFIC_LOW'
+  | 'CLUSTER_LOCATION_4092'
+  | 'CLUSTER_LOCATION_4105'
+  | 'CLUSTER_LOCATION_3901'
+  | 'CLUSTER_LOCATION_4188'
+  | 'CLUSTER_LOCATION_3802'
+  | 'COMMUNITY_VALUE_DESCRIPTION'
+  | 'COMMUNITY_IMAGE_ALT'
+  | 'LOCATION_NOT_CAPTURED'
+  | 'WARD_19'
+  | 'JUST_NOW'
+  | 'GPS_ACCURACY_GUIDANCE'
+  | 'GPS_TARGET_REACHED'
+  | 'GPS_BEST_AVAILABLE';
 
 export const translations: Record<'EN' | 'TEL', Record<TranslationKey, string>> = {
   EN: {
@@ -98,6 +214,122 @@ export const translations: Record<'EN' | 'TEL', Record<TranslationKey, string>> 
     DIRECT_GOVERNANCE_DESC: 'Skip the paperwork. Your report goes straight to the engineer responsible for your ward.',
     CITIZEN_USEFULNESS_TITLE: 'Empowering Citizens',
     CITIZEN_USEFULNESS_DESC: 'CivicLens provides a transparent platform where citizens can see their contributions making a real difference in their neighborhoods.',
+    LANGUAGE_EN: 'EN',
+    LANGUAGE_TEL: 'తెలుగు',
+    NAV_REPORT: 'Report Hazard',
+    NAV_CLUSTER: 'Cluster Feed',
+    NAV_REWARDS: 'Rewards & Coupons',
+    NAV_MAP: 'Vizag Traffic Map',
+    NAV_WORKS: 'Work Orders',
+    NAV_STATS: 'About & Stats',
+    LIVE_CLUSTER_FEED: 'Live Cluster Feed & Triage',
+    LIVE_CLUSTER_DESC: 'Real-time proximity deduplication and dynamic risk-priority queue.',
+    SYNCED: 'Synced',
+    REFRESH_FEED: 'Refresh Feed',
+    SEARCH_LOCATION: 'Search location, ward, or ID...',
+    ALL_WARDS: 'All Wards (GVMC)',
+    WARD_18: 'Ward 18 (RK Beach & Pandurangapuram)',
+    WARD_31: 'Ward 31 (Dwaraka Nagar Commercial)',
+    WARD_22: 'Ward 22 (MVP Colony Sectors 1-9)',
+    WARD_65: 'Ward 65 (Gajuwaka Industrial Hub)',
+    ALL_SEVERITIES: 'All Severities',
+    CRITICAL_FILTER: 'Critical (Risk > 85)',
+    HIGH_FILTER: 'High (Risk 70-85)',
+    MEDIUM_FILTER: 'Medium (Risk 45-70)',
+    LOW_FILTER: 'Low (Risk < 45)',
+    NO_MATCHING_HAZARDS: 'No hazards match the current filters.',
+    REPORTS: 'Reports',
+    RISK: 'Risk',
+    WIDTH: 'W',
+    DEPTH: 'D',
+    JUSTIFICATION_DEPTH: 'depth',
+    JUSTIFICATION_TRAFFIC: 'traffic',
+    CITIZEN_REPORTS: 'citizen reports',
+    LIVE_URBAN_TRIAGE: 'LIVE URBAN TRIAGE',
+    SAMPLE_PROJECTED_DATA: 'Sample / Projected Data',
+    TELEMETRY_SYNCED: 'Telemetry Synced (100% Wards)',
+    TOTAL_HAZARDS: 'Total Hazards',
+    LOGGED_ALL_ZONES: 'Logged across all 7 zones',
+    CRITICAL_OPEN: 'Critical Open',
+    IMMEDIATE_CORDON: 'Immediate cordon',
+    BUS_ROUTE_DEPTH: '>8.0cm depth on bus routes',
+    FIXED_THIS_WEEK: 'Fixed This Week',
+    VS_LAST_WEEK: 'vs last week',
+    RESURFACED_CLOSED: 'Resurfaced & closed',
+    AVG_TRIAGE_TIME: 'Avg Triage Time',
+    TRIAGE_SPEED: 'faster',
+    CAPTURE_TO_CREW: 'From capture to crew',
+    DUPLICATES_MERGED: 'Duplicates Merged',
+    RADIUS_15M: '15m radius',
+    REDUNDANT_TICKETS: 'Redundant tickets saved',
+    RISK_DISTRIBUTION: 'Risk Distribution',
+    CURRENT_ACTIVE: 'Current active',
+    TOTAL_SITES: 'Total Sites',
+    SEVERITY_CRITICAL: 'Critical',
+    SEVERITY_HIGH: 'High',
+    SEVERITY_MEDIUM: 'Medium',
+    SEVERITY_LOW: 'Low',
+    HAZARD_DENSITY_BY_WARD: 'Hazard Density by Visakhapatnam Ward',
+    VULNERABILITY_DESCRIPTION: 'Vulnerability scores based on heavy traffic and coastal rainfall.',
+    TOP_FIVE_SECTORS: 'Top 5 Sectors',
+    CRITICAL_COUNT: 'Critical',
+    TOTAL_COUNT: 'Total',
+    RED_SEGMENT: 'Red: Immediate two-wheeler hazards',
+    AMBER_SEGMENT: 'Amber: Maintenance priority',
+    TWO_WHEELER_RIDERS: 'Fatalities are two-wheeler riders',
+    DELIVERY_RIDER_RISK: 'Delivery riders face the greatest road-surface risk',
+    PILOT_SAAS_MODEL: '6-Month Pilot SaaS Model',
+    NETWORK_COVERAGE: 'Coverage across 100 km of GVMC arterial roads',
+    GLOBAL_IMPACT_METRICS: 'Global Impact Metrics',
+    AI_VERIFICATION_ENGINE: 'AI Verification Engine',
+    SIGNAL_NOISE_REDUCTION: 'Signal Noise Reduction',
+    FATALITIES_TWO_WHEELERS: 'Fatalities are two-wheeler riders',
+    GIG_RIDER_RISK: 'Delivery riders face the greatest road-surface risk',
+    DIRECT_IMPACT: 'Direct Impact',
+    DIRECT_IMPACT_DESC: 'Reports go directly to ward engineers, helping reduce delays.',
+    XP_REWARDS: 'Civic Rewards',
+    XP_REWARDS_DESC: 'Earn points for verified reports and redeem community coupons.',
+    DIGITAL_GOVERNANCE_BRIDGE: 'Digital Governance Bridge',
+    CIVIC_RESPONSIBILITY_ACTION: 'Turning civic responsibility into action.',
+    TRANSPARENT_PROGRESS: 'Transparent Progress Tracking',
+    SAFER_COMMUTES: 'Safer Commutes for Everyone',
+    GOVERNMENT_ACCOUNTABILITY: 'Stronger Government Accountability',
+    PRECISION_LOCATION_REQUIRED: 'Allow device location to attach your exact coordinates to this report.',
+    USE_EXACT_GPS: 'Use My Exact GPS Location',
+    ACQUIRING_GPS: 'Acquiring GPS...',
+    GPS_ACTIVE: 'GPS Active',
+    GPS_PERMISSION_DENIED: 'Permission Denied',
+    LOCATION_UNAVAILABLE: 'Location Unavailable',
+    LOCATION_REQUIRED_TO_REPORT: 'Capture your GPS location before submitting a report.',
+    GPS_CAPTURED: 'GPS location captured.',
+    GPS_TIMEOUT: 'No GPS fix was received within 30 seconds. Check device location settings and try again.',
+    ALLOW_LOCATION_PERMISSION: 'Allow location access in your browser settings and try again.',
+    GPS_ACCURACY_GUIDANCE: 'Sampling high-accuracy GPS, aiming for 3 m or better. Accuracy depends on your device and surroundings.',
+    GPS_TARGET_REACHED: 'The device reported GPS accuracy within the 3 m target.',
+    GPS_BEST_AVAILABLE: 'The device did not reach 3 m; using its best reported fix at',
+    SEVERITY_LABEL: 'Severity',
+    STATUS_REPORTED: 'Reported',
+    STATUS_VERIFIED: 'Verified',
+    STATUS_ASSIGNED: 'Assigned',
+    STATUS_IN_PROGRESS: 'In Progress',
+    STATUS_FIXED: 'Fixed',
+    DEFECT_POTHOLE: 'Pothole',
+    DEFECT_PAVEMENT_FRACTURE: 'Pavement Fracture',
+    DEFECT_SUNKEN_MANHOLE: 'Sunken Manhole',
+    TRAFFIC_EXTREME: 'extreme traffic',
+    TRAFFIC_HIGH: 'high traffic',
+    TRAFFIC_MODERATE: 'moderate traffic',
+    TRAFFIC_LOW: 'low traffic',
+    CLUSTER_LOCATION_4092: 'RK Beach Road, opposite INS Kursura Submarine Museum',
+    CLUSTER_LOCATION_4105: 'Old Gajuwaka Junction, NH16 Industrial Flyover Approach',
+    CLUSTER_LOCATION_3901: '2nd Lane, Dwaraka Nagar, opposite RTC Complex Gate 2',
+    CLUSTER_LOCATION_4188: 'Sector 4, MVP Double Road, near AS Raja Grounds',
+    CLUSTER_LOCATION_3802: 'Siripuram Circle, near Gurajada Kalakshetram',
+    COMMUNITY_VALUE_DESCRIPTION: 'CivicLens is built on the belief that local knowledge can improve our city. When residents report a road hazard, they help city teams find problems and prioritize repairs.',
+    COMMUNITY_IMAGE_ALT: 'Community members working together',
+    LOCATION_NOT_CAPTURED: 'Location not captured',
+    WARD_19: 'Ward 19 (Siripuram & AU Campus)',
+    JUST_NOW: 'Just now',
   },
   TEL: {
     CIVICLENS_PLATFORM: 'సివిక్ లెన్స్',
@@ -148,5 +380,121 @@ export const translations: Record<'EN' | 'TEL', Record<TranslationKey, string>> 
     DIRECT_GOVERNANCE_DESC: 'కాగితపు పనిని వదిలేయండి. మీ నివేదిక నేరుగా మీ వార్డుకు బాధ్యత వహించే ఇంజనీర్‌కు వెళుతుంది.',
     CITIZEN_USEFULNESS_TITLE: 'పౌరుల సముద్ధరణ',
     CITIZEN_USEFULNESS_DESC: 'సివిక్ లెన్స్ పౌరులకు తమ సహకారం తమ పరిసరాల్లో నిజమైన మార్పును చూపుతుందని చూసేందుకు ఒక పారదర్శక ప్లాట్‌ఫారమ్‌ను అందిస్తుంది.',
+    LANGUAGE_EN: 'EN',
+    LANGUAGE_TEL: 'తెలుగు',
+    NAV_REPORT: 'రోడ్డు సమస్యను నివేదించండి',
+    NAV_CLUSTER: 'సమస్యల జాబితా',
+    NAV_REWARDS: 'బహుమతులు మరియు కూపన్లు',
+    NAV_MAP: 'విశాఖ ట్రాఫిక్ మ్యాప్',
+    NAV_WORKS: 'పనుల ఆదేశాలు',
+    NAV_STATS: 'సమాచారం మరియు గణాంకాలు',
+    LIVE_CLUSTER_FEED: 'తక్షణ సమస్యల జాబితా మరియు పరిశీలన',
+    LIVE_CLUSTER_DESC: 'సమీపంలో ఉన్న ఫిర్యాదుల సమీకరణ మరియు ప్రమాద ప్రాధాన్యత క్రమం.',
+    SYNCED: 'సమకాలీకరణ',
+    REFRESH_FEED: 'జాబితాను రిఫ్రెష్ చేయండి',
+    SEARCH_LOCATION: 'ప్రాంతం, వార్డు లేదా ఐడీని వెతకండి...',
+    ALL_WARDS: 'అన్ని వార్డులు (GVMC)',
+    WARD_18: 'వార్డు 18 (ఆర్కే బీచ్ మరియు పాండురంగపురం)',
+    WARD_31: 'వార్డు 31 (ద్వారకా నగర్ వాణిజ్య ప్రాంతం)',
+    WARD_22: 'వార్డు 22 (ఎంవీపీ కాలనీ సెక్టర్లు 1-9)',
+    WARD_65: 'వార్డు 65 (గాజువాక పారిశ్రామిక కేంద్రం)',
+    ALL_SEVERITIES: 'అన్ని తీవ్రతలు',
+    CRITICAL_FILTER: 'అత్యంత ప్రమాదకరం (ప్రమాద స్కోరు > 85)',
+    HIGH_FILTER: 'అధికం (ప్రమాద స్కోరు 70-85)',
+    MEDIUM_FILTER: 'మధ్యస్థం (ప్రమాద స్కోరు 45-70)',
+    LOW_FILTER: 'తక్కువ (ప్రమాద స్కోరు < 45)',
+    NO_MATCHING_HAZARDS: 'ప్రస్తుత ఫిల్టర్లకు సరిపడే సమస్యలు లేవు.',
+    REPORTS: 'నివేదికలు',
+    RISK: 'ప్రమాదం',
+    WIDTH: 'వెడల్పు',
+    DEPTH: 'లోతు',
+    JUSTIFICATION_DEPTH: 'లోతు',
+    JUSTIFICATION_TRAFFIC: 'ట్రాఫిక్',
+    CITIZEN_REPORTS: 'పౌరుల నివేదికలు',
+    LIVE_URBAN_TRIAGE: 'నగర సమస్యల తక్షణ పరిశీలన',
+    SAMPLE_PROJECTED_DATA: 'నమూనా / అంచనా డేటా',
+    TELEMETRY_SYNCED: 'టెలిమెట్రీ సమకాలీకరించబడింది (100% వార్డులు)',
+    TOTAL_HAZARDS: 'మొత్తం రోడ్డు సమస్యలు',
+    LOGGED_ALL_ZONES: 'మొత్తం 7 జోన్లలో నమోదు',
+    CRITICAL_OPEN: 'తీవ్రమైన పరిష్కారం కాని సమస్యలు',
+    IMMEDIATE_CORDON: 'వెంటనే ప్రాంతాన్ని మూసివేయండి',
+    BUS_ROUTE_DEPTH: 'బస్సు మార్గాల్లో 8 సెం.మీ. కంటే ఎక్కువ లోతు',
+    FIXED_THIS_WEEK: 'ఈ వారం పరిష్కరించినవి',
+    VS_LAST_WEEK: 'గత వారంతో పోలిస్తే',
+    RESURFACED_CLOSED: 'రోడ్డు పునరుద్ధరించి ముగించినవి',
+    AVG_TRIAGE_TIME: 'సగటు పరిశీలన సమయం',
+    TRIAGE_SPEED: 'వేగంగా',
+    CAPTURE_TO_CREW: 'ఫోటో తీసినప్పటి నుండి సిబ్బంది కేటాయింపు వరకు',
+    DUPLICATES_MERGED: 'సమీకరించిన నకిలీ నివేదికలు',
+    RADIUS_15M: '15 మీటర్ల పరిధి',
+    REDUNDANT_TICKETS: 'అనవసర టికెట్లు తగ్గించబడ్డాయి',
+    RISK_DISTRIBUTION: 'ప్రమాద స్థాయిల విభజన',
+    CURRENT_ACTIVE: 'ప్రస్తుతం క్రియాశీలంగా ఉన్నవి',
+    TOTAL_SITES: 'మొత్తం ప్రాంతాలు',
+    SEVERITY_CRITICAL: 'తీవ్రమైనవి',
+    SEVERITY_HIGH: 'అధికం',
+    SEVERITY_MEDIUM: 'మధ్యస్థం',
+    SEVERITY_LOW: 'తక్కువ',
+    HAZARD_DENSITY_BY_WARD: 'విశాఖపట్నం వార్డు వారీగా రోడ్డు సమస్యలు',
+    VULNERABILITY_DESCRIPTION: 'భారీ ట్రాఫిక్ మరియు తీరప్రాంత వర్షాల ఆధారంగా ప్రమాద స్థాయిలు.',
+    TOP_FIVE_SECTORS: 'ముఖ్యమైన 5 ప్రాంతాలు',
+    CRITICAL_COUNT: 'తీవ్రమైనవి',
+    TOTAL_COUNT: 'మొత్తం',
+    RED_SEGMENT: 'ఎరుపు: ద్విచక్ర వాహనదారులకు తక్షణ ప్రమాదాలు',
+    AMBER_SEGMENT: 'పసుపు: మరమ్మతులకు ప్రాధాన్యత',
+    TWO_WHEELER_RIDERS: 'మరణించిన వారిలో ద్విచక్ర వాహనదారులు',
+    DELIVERY_RIDER_RISK: 'డెలివరీ వాహనదారులకు రోడ్డు ఉపరితల ప్రమాదం ఎక్కువ',
+    PILOT_SAAS_MODEL: '6 నెలల పైలట్ సాఫ్ట్‌వేర్ నమూనా',
+    NETWORK_COVERAGE: 'GVMC పరిధిలో 100 కి.మీ. ప్రధాన రహదారుల కవరేజ్',
+    GLOBAL_IMPACT_METRICS: 'మొత్తం ప్రభావ గణాంకాలు',
+    AI_VERIFICATION_ENGINE: 'AI ధృవీకరణ వ్యవస్థ',
+    SIGNAL_NOISE_REDUCTION: 'నకిలీ నివేదికల తగ్గింపు',
+    FATALITIES_TWO_WHEELERS: 'మరణించిన వారిలో ద్విచక్ర వాహనదారులు',
+    GIG_RIDER_RISK: 'డెలివరీ వాహనదారులకు రోడ్డు ఉపరితల ప్రమాదం ఎక్కువ',
+    DIRECT_IMPACT: 'ప్రత్యక్ష ప్రభావం',
+    DIRECT_IMPACT_DESC: 'నివేదికలు నేరుగా వార్డు ఇంజినీర్లకు చేరి ఆలస్యాన్ని తగ్గిస్తాయి.',
+    XP_REWARDS: 'పౌర బహుమతులు',
+    XP_REWARDS_DESC: 'ధృవీకరించిన నివేదికలకు పాయింట్లు పొంది కూపన్లుగా మార్చుకోండి.',
+    DIGITAL_GOVERNANCE_BRIDGE: 'డిజిటల్ పాలనా వారధి',
+    CIVIC_RESPONSIBILITY_ACTION: 'పౌర బాధ్యతను కార్యాచరణగా మారుద్దాం.',
+    TRANSPARENT_PROGRESS: 'పనుల పురోగతిని స్పష్టంగా తెలుసుకోండి',
+    SAFER_COMMUTES: 'అందరికీ సురక్షిత ప్రయాణం',
+    GOVERNMENT_ACCOUNTABILITY: 'ప్రభుత్వ జవాబుదారీతనాన్ని పెంచడం',
+    PRECISION_LOCATION_REQUIRED: 'ఈ నివేదికకు మీ ఖచ్చితమైన స్థానాన్ని జోడించడానికి పరికర లొకేషన్‌ను అనుమతించండి.',
+    USE_EXACT_GPS: 'నా ఖచ్చితమైన GPS స్థానాన్ని ఉపయోగించండి',
+    ACQUIRING_GPS: 'GPS స్థానాన్ని పొందుతోంది...',
+    GPS_ACTIVE: 'GPS క్రియాశీలం',
+    GPS_PERMISSION_DENIED: 'అనుమతి నిరాకరించబడింది',
+    LOCATION_UNAVAILABLE: 'స్థానం అందుబాటులో లేదు',
+    LOCATION_REQUIRED_TO_REPORT: 'నివేదిక పంపే ముందు మీ GPS స్థానాన్ని పొందండి.',
+    GPS_CAPTURED: 'GPS స్థానం పొందబడింది.',
+    GPS_TIMEOUT: '30 సెకన్లలో GPS స్థానం పొందలేకపోయాం. పరికర లొకేషన్ సెట్టింగులను పరిశీలించి మళ్లీ ప్రయత్నించండి.',
+    ALLOW_LOCATION_PERMISSION: 'బ్రౌజర్ సెట్టింగుల్లో లొకేషన్ అనుమతించి మళ్లీ ప్రయత్నించండి.',
+    GPS_ACCURACY_GUIDANCE: '3 మీటర్లు లేదా అంతకంటే మెరుగైన ఖచ్చితత్వం కోసం GPS స్థానాన్ని సేకరిస్తున్నాం. ఖచ్చితత్వం మీ పరికరం మరియు పరిసరాలపై ఆధారపడి ఉంటుంది.',
+    GPS_TARGET_REACHED: 'పరికరం 3 మీటర్ల GPS ఖచ్చితత్వ లక్ష్యాన్ని చేరుకుంది.',
+    GPS_BEST_AVAILABLE: 'పరికరం 3 మీటర్ల లక్ష్యాన్ని చేరుకోలేదు; అందుబాటులో ఉన్న ఉత్తమ స్థానాన్ని ఉపయోగిస్తున్నాం:',
+    SEVERITY_LABEL: 'తీవ్రత',
+    STATUS_REPORTED: 'నివేదించబడింది',
+    STATUS_VERIFIED: 'ధృవీకరించబడింది',
+    STATUS_ASSIGNED: 'కేటాయించబడింది',
+    STATUS_IN_PROGRESS: 'పని జరుగుతోంది',
+    STATUS_FIXED: 'పరిష్కరించబడింది',
+    DEFECT_POTHOLE: 'గుంత',
+    DEFECT_PAVEMENT_FRACTURE: 'రోడ్డు ఉపరితల పగులు',
+    DEFECT_SUNKEN_MANHOLE: 'కుంగిన మ్యాన్‌హోల్',
+    TRAFFIC_EXTREME: 'అత్యధిక ట్రాఫిక్',
+    TRAFFIC_HIGH: 'అధిక ట్రాఫిక్',
+    TRAFFIC_MODERATE: 'మధ్యస్థ ట్రాఫిక్',
+    TRAFFIC_LOW: 'తక్కువ ట్రాఫిక్',
+    CLUSTER_LOCATION_4092: 'ఆర్కే బీచ్ రోడ్, ఐఎన్ఎస్ కుర్సురా జలాంతర్గామి మ్యూజియం ఎదురుగా',
+    CLUSTER_LOCATION_4105: 'పాత గాజువాక జంక్షన్, ఎన్‌హెచ్ 16 పారిశ్రామిక ఫ్లైఓవర్ ప్రవేశ మార్గం',
+    CLUSTER_LOCATION_3901: '2వ లేన్, ద్వారకా నగర్, ఆర్టీసీ కాంప్లెక్స్ గేట్ 2 ఎదురుగా',
+    CLUSTER_LOCATION_4188: 'సెక్టార్ 4, ఎంవీపీ డబుల్ రోడ్, ఏఎస్ రాజా గ్రౌండ్స్ సమీపంలో',
+    CLUSTER_LOCATION_3802: 'సిరిపురం సర్కిల్, గురజాడ కళాక్షేత్రం సమీపంలో',
+    COMMUNITY_VALUE_DESCRIPTION: 'స్థానిక ప్రజల పరిజ్ఞానం నగరాన్ని మెరుగుపరచగలదనే నమ్మకంతో సివిక్‌లెన్స్ రూపొందించబడింది. నివాసితులు రోడ్డు సమస్యను నివేదించినప్పుడు, నగర బృందాలు సమస్యలను గుర్తించి మరమ్మతులకు ప్రాధాన్యత ఇవ్వడంలో సహాయపడతారు.',
+    COMMUNITY_IMAGE_ALT: 'కలిసి పనిచేస్తున్న సమాజ సభ్యులు',
+    LOCATION_NOT_CAPTURED: 'స్థానం పొందలేదు',
+    WARD_19: 'వార్డు 19 (సిరిపురం మరియు ఏయూ క్యాంపస్)',
+    JUST_NOW: 'ఇప్పుడే',
   },
 };

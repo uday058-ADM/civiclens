@@ -29,12 +29,20 @@ import { uploadHazardImage } from '@/lib/storage';
 import { GeminiAnalysisResult, HazardReport } from '@/types';
 import { VisualTelemetryData } from '@/lib/gemini';
 import { translations } from '@/lib/i18n';
+import {
+  acquireBestGpsFix,
+  formatAccuracyMeters,
+  GPS_TARGET_ACCURACY_METERS,
+} from '@/lib/geolocation';
+import type { LocationAcquisitionError, LocationFix } from '@/lib/geolocation';
 
 interface ReportHazardTabProps {
   onNewReportCreated?: (hazard: HazardReport, isDuplicate?: boolean, msg?: string) => void;
   onAwardCoins?: (amount: number) => void;
   onShowToast?: (msg: string, type?: 'success' | 'error' | 'info') => void;
   onNavigateToRewards?: () => void;
+  onLocationChange?: (location: { lat: number; lng: number; accuracy: number }) => void;
+  location?: LocationFix | null;
   userCoins?: number;
   language?: 'EN' | 'TEL';
 }
@@ -44,6 +52,8 @@ export const ReportHazardTab: React.FC<ReportHazardTabProps> = ({
   onAwardCoins,
   onShowToast,
   onNavigateToRewards,
+  onLocationChange,
+  location,
   userCoins = 840,
   language = 'EN',
 }) => {
@@ -68,95 +78,114 @@ export const ReportHazardTab: React.FC<ReportHazardTabProps> = ({
     address: string;
     ward: string;
   }>({
-    lat: 17.7142,
-    lng: 83.3328,
-    accuracy: 3.2,
-    address: 'Beach Road, opposite INS Kursura Submarine Museum',
+    lat: 0,
+    lng: 0,
+    accuracy: 0,
+    address: '',
     ward: 'Ward 18 RK Beach',
   });
   const [isLocating, setIsLocating] = useState<boolean>(false);
-  const [gpsStatus, setGpsStatus] = useState<'idle' | 'locating' | 'granted' | 'denied' | 'unsupported'>('idle');
+  const [gpsStatus, setGpsStatus] = useState<
+    'idle' | 'locating' | 'granted' | 'denied' | 'unsupported' | 'unavailable'
+  >('idle');
+  const gpsAcquisitionCancelRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    if (!location) return;
+    const coordinateAddress = `${location.lat.toFixed(6)}° N, ${location.lng.toFixed(6)}° E`;
+    setGpsLocation((previous) => ({
+      ...previous,
+      ...location,
+      address: previous.lat === location.lat && previous.lng === location.lng
+        ? previous.address || coordinateAddress
+        : coordinateAddress,
+    }));
+    setGpsStatus('granted');
+  }, [location]);
+
+  useEffect(() => () => gpsAcquisitionCancelRef.current?.(), []);
 
   // Reverse-geocode coordinates into a readable address using OpenStreetMap Nominatim
   const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=${language === 'TEL' ? 'te' : 'en'}`,
         { headers: { 'Accept': 'application/json' } }
       );
       if (!res.ok) throw new Error('geocode failed');
       const data = await res.json();
       return data.display_name as string;
     } catch {
-      return `${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E`;
+      return `${lat.toFixed(6)}° N, ${lng.toFixed(6)}° E`;
     }
   };
 
-  // Request GPS access from the user and capture exact device location.
-  // Triggered by an explicit user gesture (the button) so the browser
-  // permission prompt is shown. We always call getCurrentPosition() directly
-  // so the browser can prompt the user for permission — the permissions API
-  // query is only used to provide helpful guidance, never to block the prompt.
-  const requestLocation = async () => {
+  // Request GPS access from a user gesture and keep the most accurate fix.
+  const requestLocation = () => {
+    if (gpsStatus === 'locating') return;
     if (typeof navigator === 'undefined' || !navigator.geolocation) {
       setGpsStatus('unsupported');
       triggerToast('Geolocation is not supported by this browser.', 'error');
       return;
     }
 
+    gpsAcquisitionCancelRef.current?.();
     setIsLocating(true);
     setGpsStatus('locating');
 
-    // Direct call to getCurrentPosition to trigger browser prompt
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const lat = Number(pos.coords.latitude.toFixed(6));
-        const lng = Number(pos.coords.longitude.toFixed(6));
-        const accuracy = Math.max(1, Math.round(pos.coords.accuracy));
-        const address = await reverseGeocode(lat, lng);
-        setGpsLocation((prev) => ({
-          ...prev,
-          lat,
-          lng,
-          accuracy,
-          address,
-        }));
-        setGpsStatus('granted');
-        setIsLocating(false);
-        triggerToast('📍 GPS location captured precisely', 'success');
-      },
-      (err) => {
-        console.warn('Geolocation denied or unavailable:', err);
-        setGpsStatus('denied');
-        setIsLocating(false);
+    const previousFix = gpsLocation.accuracy > 0 ? gpsLocation : null;
+    const saveLocation = (fix: LocationFix) => {
+      gpsAcquisitionCancelRef.current = null;
+      const coordinateAddress = `${fix.lat.toFixed(6)}° N, ${fix.lng.toFixed(6)}° E`;
+      onLocationChange?.(fix);
+      setGpsLocation((prev) => ({ ...prev, ...fix, address: coordinateAddress }));
+      setGpsStatus('granted');
+      setIsLocating(false);
+      const reachedTarget = fix.accuracy <= GPS_TARGET_ACCURACY_METERS;
+      triggerToast(
+        reachedTarget
+          ? `${t.GPS_TARGET_REACHED} ±${formatAccuracyMeters(fix.accuracy)}m`
+          : `${t.GPS_BEST_AVAILABLE} ±${formatAccuracyMeters(fix.accuracy)}m`,
+        reachedTarget ? 'success' : 'info',
+      );
+      void reverseGeocode(fix.lat, fix.lng).then((address) => {
+        setGpsLocation((prev) => (
+          prev.lat === fix.lat && prev.lng === fix.lng ? { ...prev, address } : prev
+        ));
+      });
+    };
 
-        if (err.code === err.PERMISSION_DENIED) {
-          triggerToast('GPS permission denied. Please allow location access in your browser settings to capture exact coordinates.', 'error');
-        } else if (err.code === err.TIMEOUT) {
-          // Retry once with highAccuracy: false if it timed out
-          triggerToast('GPS request timed out. Retrying with standard accuracy...', 'info');
-          navigator.geolocation.getCurrentPosition(
-            async (pos) => {
-              const lat = Number(pos.coords.latitude.toFixed(6));
-              const lng = Number(pos.coords.longitude.toFixed(6));
-              const accuracy = Math.max(1, Math.round(pos.coords.accuracy));
-              const address = await reverseGeocode(lat, lng);
-              setGpsLocation((prev) => ({ ...prev, lat, lng, accuracy, address }));
-              setGpsStatus('granted');
-              triggerToast('📍 GPS location captured (Standard Accuracy)', 'success');
-            },
-            () => triggerToast('Unable to get GPS location even with standard accuracy.', 'error'),
-            { enableHighAccuracy: false, timeout: 10000 }
-          );
-        } else {
-          triggerToast('Unable to get GPS location. Please check your device settings.', 'error');
-        }
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 0
+    const handleAcquisitionError = (error: LocationAcquisitionError) => {
+      gpsAcquisitionCancelRef.current = null;
+      setIsLocating(false);
+      if (previousFix) {
+        setGpsLocation(previousFix);
+        setGpsStatus('granted');
+      } else {
+        setGpsStatus(
+          error === 'permission-denied'
+            ? 'denied'
+            : error === 'unsupported'
+              ? 'unsupported'
+              : 'unavailable',
+        );
       }
+
+      const message = error === 'permission-denied'
+        ? `${t.GPS_PERMISSION_DENIED}. ${t.ALLOW_LOCATION_PERMISSION}`
+        : error === 'timeout'
+          ? t.GPS_TIMEOUT
+          : t.LOCATION_UNAVAILABLE;
+      triggerToast(message, 'error');
+    };
+
+    gpsAcquisitionCancelRef.current = acquireBestGpsFix(
+      (fix) => {
+        const coordinateAddress = `${fix.lat.toFixed(6)}° N, ${fix.lng.toFixed(6)}° E`;
+        setGpsLocation((prev) => ({ ...prev, ...fix, address: coordinateAddress }));
+      },
+      saveLocation,
+      handleAcquisitionError,
     );
   };
 
@@ -539,6 +568,11 @@ export const ReportHazardTab: React.FC<ReportHazardTabProps> = ({
       triggerToast('Please capture or select a road defect photo first.', 'error');
       return;
     }
+    if (gpsStatus !== 'granted') {
+      triggerToast(t.LOCATION_REQUIRED_TO_REPORT, 'error');
+      requestLocation();
+      return;
+    }
 
     // If analysis hasn't completed yet (e.g. user clicked submit very fast), run it.
     let aiData = aiResult;
@@ -570,6 +604,7 @@ export const ReportHazardTab: React.FC<ReportHazardTabProps> = ({
       const hazardPayload = {
         lat: gpsLocation.lat,
         lng: gpsLocation.lng,
+        accuracy: gpsLocation.accuracy,
         address: gpsLocation.address,
         ward: gpsLocation.ward,
         width_cm: aiData.width_cm || 45.0,
@@ -607,7 +642,11 @@ export const ReportHazardTab: React.FC<ReportHazardTabProps> = ({
           location: gpsLocation.address,
           ward: gpsLocation.ward,
           wardNumber: parseInt(gpsLocation.ward.replace(/\D/g, '') || '18', 10),
-          coordinates: { lat: gpsLocation.lat, lng: gpsLocation.lng },
+          coordinates: {
+            lat: gpsLocation.lat,
+            lng: gpsLocation.lng,
+            accuracy: gpsLocation.accuracy,
+          },
           width_cm: aiData.width_cm || 50.0,
           depth_cm: aiData.depth_cm || 8.5,
           confidence: aiData.confidence || 94,
@@ -713,16 +752,27 @@ export const ReportHazardTab: React.FC<ReportHazardTabProps> = ({
                         : 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/20'
                     }`}
                 >
-                  {gpsStatus === 'granted' ? 'GPS Active' : gpsStatus === 'denied' ? 'Permission Denied' : gpsStatus === 'locating' ? 'Locating…' : 'Tap to Enable'}
+                  {gpsStatus === 'granted'
+                    ? t.GPS_ACTIVE
+                    : gpsStatus === 'denied'
+                      ? t.GPS_PERMISSION_DENIED
+                      : gpsStatus === 'unsupported'
+                      || gpsStatus === 'unavailable'
+                        ? t.LOCATION_UNAVAILABLE
+                        : gpsStatus === 'locating'
+                          ? t.LOCATING
+                          : language === 'TEL' ? 'స్థానం అవసరం' : 'Location Required'}
                 </span>
               </div>
               <div>
                 <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Geospatial Uplink</div>
                 <p className="text-lg text-slate-800 dark:text-slate-200 font-black leading-tight">
-                  {gpsLocation.address.split(',')[0]}
+                  {gpsStatus === 'granted' ? gpsLocation.address.split(',')[0] : t.PRECISION_LOCATION_REQUIRED}
                 </p>
                 <p className="text-[10px] text-teal-500 font-mono mt-1 font-bold">
-                  {gpsLocation.lat}° N, {gpsLocation.lng}° E
+                  {gpsStatus === 'granted'
+                    ? `${gpsLocation.lat.toFixed(6)}° N, ${gpsLocation.lng.toFixed(6)}° E`
+                    : language === 'TEL' ? 'ఖచ్చితమైన స్థానం ఇంకా పొందలేదు' : 'Exact coordinates not captured'}
                 </p>
               </div>
             </div>
@@ -733,7 +783,7 @@ export const ReportHazardTab: React.FC<ReportHazardTabProps> = ({
               className="mt-6 w-full py-3 rounded-2xl bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-400 text-[11px] font-black uppercase tracking-[0.2em] transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
             >
               <MapPin className="w-4 h-4" />
-              {isLocating ? 'Acquiring GPS…' : 'Use My Exact GPS Location'}
+              {isLocating ? t.ACQUIRING_GPS : t.USE_EXACT_GPS}
             </button>
           </div>
         </div>
@@ -747,14 +797,22 @@ export const ReportHazardTab: React.FC<ReportHazardTabProps> = ({
               </div>
               <h3 className="text-2xl font-black text-slate-900 dark:text-white">Advanced Signal Triangulation</h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                Our platform utilizes multi-source GPS data and device-level IMU sensors to stabilize reporting coordinates, ensuring government engineers find the hazard within ±{gpsLocation.accuracy} meters.
+                {gpsStatus === 'granted'
+                  ? `${gpsLocation.accuracy <= GPS_TARGET_ACCURACY_METERS ? t.GPS_TARGET_REACHED : t.GPS_BEST_AVAILABLE} ±${formatAccuracyMeters(gpsLocation.accuracy)}m`
+                  : t.GPS_ACCURACY_GUIDANCE}
               </p>
             </div>
             <div className="w-full md:w-48 aspect-square rounded-[1.5rem] bg-slate-100 dark:bg-slate-950/50 border border-slate-200 dark:border-white/10 flex items-center justify-center relative overflow-hidden group">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent animate-pulse"></div>
               <div className="relative text-center">
-                <div className="text-3xl font-black text-slate-900 dark:text-white font-mono">±{gpsLocation.accuracy}m</div>
-                <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">Variance</div>
+                <div className="text-3xl font-black text-slate-900 dark:text-white font-mono">
+                  {gpsStatus === 'granted' || (gpsStatus === 'locating' && gpsLocation.accuracy > 0)
+                    ? `±${formatAccuracyMeters(gpsLocation.accuracy)}m`
+                    : '—'}
+                </div>
+                <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">
+                  {language === 'TEL' ? 'ఖచ్చితత్వం' : 'Accuracy'}
+                </div>
               </div>
             </div>
           </div>
@@ -1055,11 +1113,12 @@ export const ReportHazardTab: React.FC<ReportHazardTabProps> = ({
                   Report Location
                 </div>
                 <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
-                  {gpsLocation.address}
+                  {gpsStatus === 'granted' ? gpsLocation.address : t.PRECISION_LOCATION_REQUIRED}
                 </p>
                 <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
-                  {gpsLocation.lat.toFixed(5)}° N, {gpsLocation.lng.toFixed(5)}° E
-                  {gpsStatus === 'granted' ? ' • GPS verified' : ` • ±${gpsLocation.accuracy}m`}
+                  {gpsStatus === 'granted'
+                    ? `${gpsLocation.lat.toFixed(6)}° N, ${gpsLocation.lng.toFixed(6)}° E • ±${formatAccuracyMeters(gpsLocation.accuracy)}m GPS`
+                    : t.LOCATION_REQUIRED_TO_REPORT}
                 </p>
               </div>
             </div>

@@ -18,6 +18,7 @@ interface BottomNavProps {
   onTabChange: (tab: TabKey) => void;
   queueCount?: number;
   userCoins?: number;
+  language?: 'EN' | 'TEL';
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({
@@ -25,14 +26,15 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   onTabChange,
   queueCount = 9,
   userCoins = 840,
+  language = 'EN',
 }) => {
   const tabs = [
-    { key: 'upload' as TabKey, label: 'Report', icon: Camera, highlight: true },
-    { key: 'queue' as TabKey, label: 'Cluster', icon: ListOrdered, badge: queueCount },
-    { key: 'rewards' as TabKey, label: 'Rewards', icon: Gift, coinBadge: `${userCoins}` },
-    { key: 'map' as TabKey, label: 'Map', icon: MapPin },
-    { key: 'dispatch' as TabKey, label: 'Works', icon: Truck },
-    { key: 'about' as TabKey, label: 'Stats', icon: BarChart3 },
+    { key: 'upload' as TabKey, label: language === 'TEL' ? 'నివేదిక' : 'Report', icon: Camera, highlight: true },
+    { key: 'queue' as TabKey, label: language === 'TEL' ? 'సమస్యలు' : 'Cluster', icon: ListOrdered, badge: queueCount },
+    { key: 'rewards' as TabKey, label: language === 'TEL' ? 'బహుమతులు' : 'Rewards', icon: Gift, coinBadge: `${userCoins}` },
+    { key: 'map' as TabKey, label: language === 'TEL' ? 'మ్యాప్' : 'Map', icon: MapPin },
+    { key: 'dispatch' as TabKey, label: language === 'TEL' ? 'పనులు' : 'Works', icon: Truck },
+    { key: 'about' as TabKey, label: language === 'TEL' ? 'గణాంకాలు' : 'Stats', icon: BarChart3 },
   ];
 
   return (

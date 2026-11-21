@@ -39,6 +39,7 @@ export interface HazardReport {
   coordinates: {
     lat: number;
     lng: number;
+    accuracy?: number;
   };
   width_cm: number;
   depth_cm: number;

@@ -27,6 +27,7 @@ interface HeaderProps {
   onToggleLanguage: () => void;
   onTriggerAlertTest: () => void;
   onOpenRewards: () => void;
+  location?: { lat: number; lng: number; accuracy: number } | null;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -39,6 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleLanguage,
   onTriggerAlertTest,
   onOpenRewards,
+  location,
 }) => {
   const t = translations[language];
 
@@ -68,7 +70,11 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="hidden xl:flex items-center gap-3 text-[10px] text-slate-500 font-mono pl-6 border-l border-slate-200 dark:border-white/5">
             <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-white/5 px-2 py-1 rounded-md">
               <MapPin className="w-3 h-3 text-amber-500/70" />
-              <span className="text-slate-700 dark:text-slate-300">17.7211° N, 83.3155° E</span>
+              <span className="text-slate-700 dark:text-slate-300">
+                {location
+                  ? `${location.lat.toFixed(6)}° N, ${location.lng.toFixed(6)}° E (±${Math.ceil(location.accuracy)}m)`
+                  : t.LOCATION_NOT_CAPTURED}
+              </span>
             </div>
             <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-white/5 px-2 py-1 rounded-md">
               <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
@@ -117,10 +123,12 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={onToggleLanguage}
-              className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-500 hover:text-teal-400 transition-all"
-              title="Change Language"
+              className="min-w-12 h-10 px-2 flex items-center justify-center gap-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-500 hover:text-teal-400 transition-all"
+              title={language === 'EN' ? 'తెలుగులోకి మార్చండి' : 'Switch to English'}
+              aria-label={language === 'EN' ? 'Switch to Telugu' : 'Switch to English'}
             >
               <Globe className="w-4 h-4" />
+              <span className="text-[10px] font-bold">{language === 'EN' ? t.LANGUAGE_TEL : t.LANGUAGE_EN}</span>
             </button>
 
             <button

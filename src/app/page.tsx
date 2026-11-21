@@ -25,6 +25,11 @@ export default function CivicLensHome() {
   const [darkMode, setDarkMode] = useState<boolean>(true);
   const [userCoins, setUserCoins] = useState<number>(840);
   const [language, setLanguage] = useState<'EN' | 'TEL'>('EN');
+  const [deviceLocation, setDeviceLocation] = useState<{
+    lat: number;
+    lng: number;
+    accuracy: number;
+  } | null>(null);
   const [selectedHazard, setSelectedHazard] = useState<HazardReport | null>(null);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
@@ -32,8 +37,16 @@ export default function CivicLensHome() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       document.documentElement.classList.add('dark');
+      const savedLanguage = localStorage.getItem('civiclens_language');
+      if (savedLanguage === 'EN' || savedLanguage === 'TEL') setLanguage(savedLanguage);
     }
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('civiclens_language', language);
+    }
+  }, [language]);
 
   const handleLogin = (selectedRole: 'citizen' | 'engineer') => {
     setRole(selectedRole);
@@ -316,6 +329,7 @@ export default function CivicLensHome() {
         onToggleLanguage={handleToggleLanguage}
         onTriggerAlertTest={handleTriggerAlertTest}
         onOpenRewards={() => setActiveTab('rewards')}
+        location={deviceLocation}
       />
 
       <div className="flex-1 flex w-full">
@@ -325,6 +339,7 @@ export default function CivicLensHome() {
           onTabChange={setActiveTab}
           queueCount={queueCount}
           userCoins={userCoins}
+          language={language}
         />
 
         {/* Main Viewport */}
@@ -337,6 +352,8 @@ export default function CivicLensHome() {
               onNavigateToRewards={() => setActiveTab('rewards')}
               userCoins={userCoins}
               language={language}
+              location={deviceLocation}
+              onLocationChange={setDeviceLocation}
             />
           )}
 
@@ -346,6 +363,7 @@ export default function CivicLensHome() {
               onSelectHazard={(h) => setSelectedHazard(h)}
               onRefresh={fetchHazards}
               onShowToast={showToast}
+              language={language}
               role={role}
             />
           )}
@@ -364,6 +382,8 @@ export default function CivicLensHome() {
               hazards={hazards}
               onSelectHazard={(h) => setSelectedHazard(h)}
               onShowToast={showToast}
+              location={deviceLocation}
+              onLocationChange={setDeviceLocation}
             />
           )}
 
@@ -398,6 +418,7 @@ export default function CivicLensHome() {
         onTabChange={setActiveTab}
         queueCount={queueCount}
         userCoins={userCoins}
+        language={language}
       />
 
       {/* Toast Notifications */}
