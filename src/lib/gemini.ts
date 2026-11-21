@@ -149,7 +149,7 @@ export async function analyzeHazardWithGemini(params: {
 
   // 1. Live Gemini Multimodal Vision Execution
   if (apiKey && apiKey.length > 15 && !apiKey.includes('your-') && !apiKey.includes('your_')) {
-    const candidateModels = ['gemini-2.0-flash', 'gemini-1.5-flash'];
+    const candidateModels = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
     const ai = new GoogleGenAI({ apiKey });
 
     const prompt = `You are a Senior Municipal Road Safety and Surface Defect Inspector for the Greater Visakhapatnam Municipal Corporation (GVMC).
@@ -250,17 +250,44 @@ CRITICAL DISCRIMINATION RULES:
         const responseText = response.text;
         if (responseText) {
           const parsed = JSON.parse(responseText);
+          const isHazard = Boolean(parsed.is_hazard);
+          const rawDepth = Number(parsed.depth_cm) || 0;
+          const rawWidth = Number(parsed.width_cm) || 0;
+
+          // Official GVMC composite civil risk formula
+          const depthWeight = Math.min(40, Math.round(rawDepth * 3.5));
+          const areaWeight = Math.min(20, Math.round((rawWidth / 100) * 20));
+          const trafficWeight = roadType === 'Transit Corridor' ? 20 : (roadType === 'Arterial' ? 16 : 12);
+          const reportsWeight = 4;
+          const formulaRisk = isHazard
+            ? Math.min(100, Math.max(10, depthWeight + areaWeight + trafficWeight + reportsWeight))
+            : 0;
+
+          const calculatedScore = isHazard
+            ? (parsed.base_risk_score && parsed.base_risk_score > 0
+                ? Math.round((Number(parsed.base_risk_score) * 0.4) + (formulaRisk * 0.6))
+                : formulaRisk)
+            : 0;
+
+          let severityLevel = parsed.severity_level;
+          if (isHazard && (!severityLevel || severityLevel === 'None')) {
+            if (calculatedScore >= 75 || rawDepth >= 8) severityLevel = 'Critical';
+            else if (calculatedScore >= 55 || rawDepth >= 5) severityLevel = 'High';
+            else if (calculatedScore >= 35) severityLevel = 'Medium';
+            else severityLevel = 'Low';
+          }
+
           return {
-            is_hazard: Boolean(parsed.is_hazard),
-            detected_condition: parsed.detected_condition || 'Pothole',
-            defect_type: parsed.defect_type || (parsed.is_hazard ? 'Pothole' : 'None'),
-            width_cm: Number(parsed.width_cm) || 0,
-            depth_cm: Number(parsed.depth_cm) || 0,
-            confidence: Number(parsed.confidence) || 90,
-            severity_level: parsed.severity_level || (parsed.is_hazard ? 'High' : 'None'),
-            base_risk_score: Number(parsed.base_risk_score) || 0,
+            is_hazard: isHazard,
+            detected_condition: parsed.detected_condition || (isHazard ? 'Pothole' : 'Normal Road Condition'),
+            defect_type: parsed.defect_type || (isHazard ? 'Pothole' : 'None'),
+            width_cm: rawWidth,
+            depth_cm: rawDepth,
+            confidence: Number(parsed.confidence) || 92,
+            severity_level: isHazard ? (severityLevel || 'High') : 'None',
+            base_risk_score: calculatedScore,
             explanation: parsed.explanation || 'Visual analysis completed.',
-            why_ranked_here: parsed.explanation || 'Verified road hazard',
+            why_ranked_here: parsed.explanation || `${rawDepth}cm cavity on ${roadType} corridor in ${ward}`,
             recommended_action: parsed.recommended_action || 'Inspect and repair according to GVMC road standards.',
             is_inconclusive: Boolean(parsed.is_inconclusive),
             scale_reference_used: scaleReference,

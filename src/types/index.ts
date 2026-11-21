@@ -110,14 +110,18 @@ export interface OfflineReport {
 export interface Coupon {
   id: string;
   title: string;
+  title_te?: string;
   brand: string;
   category: 'food' | 'clothing' | 'groceries';
   discount: string;
+  discount_te?: string;
   coinCost: number;
   description: string;
+  description_te?: string;
   code: string;
   expiryDays: number;
   badge: string;
+  badge_te?: string;
   bgGradient: string;
 }
 

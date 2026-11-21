@@ -50,7 +50,7 @@ export default function CivicLensHome() {
 
   const handleLogin = (selectedRole: 'citizen' | 'engineer') => {
     setRole(selectedRole);
-    setActiveTab('upload');
+    setActiveTab(selectedRole === 'engineer' ? 'queue' : 'upload');
     showToast(`Welcome! Logged in as ${selectedRole === 'citizen' ? 'Citizen' : 'Government Officer'}`, 'success');
   };
 
@@ -374,6 +374,7 @@ export default function CivicLensHome() {
               onDeductCoins={handleDeductCoins}
               onShowToast={showToast}
               onNavigateToUpload={() => setActiveTab('upload')}
+              language={language}
             />
           )}
 
@@ -394,6 +395,7 @@ export default function CivicLensHome() {
               onShowToast={showToast}
               onUpdateStatus={handleUpdateStatus}
               onBatchDispatch={handleBatchDispatch}
+              language={language}
             />
           )}
 

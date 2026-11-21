@@ -18,7 +18,6 @@ import { HazardReport } from '@/types';
 import {
   acquireBestGpsFix,
   formatAccuracyMeters,
-  GPS_TARGET_ACCURACY_METERS,
 } from '@/lib/geolocation';
 
 interface MapTabProps {
@@ -65,12 +64,9 @@ export const MapTab: React.FC<MapTabProps> = ({
         gpsAcquisitionCancelRef.current = null;
         onLocationChange?.(currentLocation);
         setIsLocating(false);
-        const reachedTarget = currentLocation.accuracy <= GPS_TARGET_ACCURACY_METERS;
         onShowToast(
-          reachedTarget
-            ? `GPS fix reached the 3 m target (±${formatAccuracyMeters(currentLocation.accuracy)}m).`
-            : `Best GPS fix captured (±${formatAccuracyMeters(currentLocation.accuracy)}m); the device did not reach 3 m.`,
-          reachedTarget ? 'success' : 'info',
+          `GPS location locked (±${formatAccuracyMeters(currentLocation.accuracy)}m accuracy).`,
+          'success',
         );
       },
       (error) => {

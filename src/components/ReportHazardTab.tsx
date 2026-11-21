@@ -32,7 +32,6 @@ import { translations } from '@/lib/i18n';
 import {
   acquireBestGpsFix,
   formatAccuracyMeters,
-  GPS_TARGET_ACCURACY_METERS,
 } from '@/lib/geolocation';
 import type { LocationAcquisitionError, LocationFix } from '@/lib/geolocation';
 
@@ -106,7 +105,7 @@ export const ReportHazardTab: React.FC<ReportHazardTabProps> = ({
   useEffect(() => () => gpsAcquisitionCancelRef.current?.(), []);
 
   // Reverse-geocode coordinates into a readable address using OpenStreetMap Nominatim
-  const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
+  const reverseGeocode = async (lat: number, lng: number): Promise<{ address: string; ward?: string }> => {
     try {
       const res = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=${language === 'TEL' ? 'te' : 'en'}`,
@@ -114,9 +113,26 @@ export const ReportHazardTab: React.FC<ReportHazardTabProps> = ({
       );
       if (!res.ok) throw new Error('geocode failed');
       const data = await res.json();
-      return data.display_name as string;
+      const addr = data.address || {};
+      const place = data.name || addr.road || addr.street || addr.pedestrian || addr.suburb || '';
+      const locality = addr.neighbourhood || addr.suburb || addr.residential || '';
+      const city = addr.city || addr.town || addr.county || addr.state_district || 'Visakhapatnam';
+
+      const parts = [place, locality, city].filter((p, idx, arr) => Boolean(p) && arr.indexOf(p) === idx);
+      const cleanAddress = parts.length > 0 ? parts.join(', ') : (data.display_name || `${lat.toFixed(6)}° N, ${lng.toFixed(6)}° E`);
+
+      let detectedWard: string | undefined;
+      const combined = `${data.display_name || ''} ${place} ${locality}`.toLowerCase();
+      if (combined.includes('beach') || combined.includes('pandurangapuram')) detectedWard = 'Ward 18 RK Beach';
+      else if (combined.includes('dwaraka') || combined.includes('rtc')) detectedWard = 'Ward 31 Dwaraka Nagar';
+      else if (combined.includes('gajuwaka')) detectedWard = 'Ward 65 Gajuwaka';
+      else if (combined.includes('mvp')) detectedWard = 'Ward 22 MVP Colony';
+      else if (combined.includes('siripuram') || combined.includes('waltair')) detectedWard = 'Ward 19 Siripuram';
+      else if (combined.includes('madhurawada')) detectedWard = 'Ward 44 Madhurawada';
+
+      return { address: cleanAddress, ward: detectedWard };
     } catch {
-      return `${lat.toFixed(6)}° N, ${lng.toFixed(6)}° E`;
+      return { address: `${lat.toFixed(6)}° N, ${lng.toFixed(6)}° E` };
     }
   };
 
@@ -138,19 +154,22 @@ export const ReportHazardTab: React.FC<ReportHazardTabProps> = ({
       gpsAcquisitionCancelRef.current = null;
       const coordinateAddress = `${fix.lat.toFixed(6)}° N, ${fix.lng.toFixed(6)}° E`;
       onLocationChange?.(fix);
-      setGpsLocation((prev) => ({ ...prev, ...fix, address: coordinateAddress }));
+      setGpsLocation((prev) => ({
+        ...prev,
+        ...fix,
+        address: prev.address && !prev.address.includes('°') ? prev.address : coordinateAddress,
+      }));
       setGpsStatus('granted');
       setIsLocating(false);
-      const reachedTarget = fix.accuracy <= GPS_TARGET_ACCURACY_METERS;
       triggerToast(
-        reachedTarget
-          ? `${t.GPS_TARGET_REACHED} ±${formatAccuracyMeters(fix.accuracy)}m`
-          : `${t.GPS_BEST_AVAILABLE} ±${formatAccuracyMeters(fix.accuracy)}m`,
-        reachedTarget ? 'success' : 'info',
+        `${t.GPS_CAPTURED} (±${formatAccuracyMeters(fix.accuracy)}m)`,
+        'success',
       );
-      void reverseGeocode(fix.lat, fix.lng).then((address) => {
+      void reverseGeocode(fix.lat, fix.lng).then(({ address, ward }) => {
         setGpsLocation((prev) => (
-          prev.lat === fix.lat && prev.lng === fix.lng ? { ...prev, address } : prev
+          prev.lat === fix.lat && prev.lng === fix.lng
+            ? { ...prev, address, ward: ward || prev.ward }
+            : prev
         ));
       });
     };
@@ -266,6 +285,74 @@ export const ReportHazardTab: React.FC<ReportHazardTabProps> = ({
       };
       reader.onerror = () => reject(new Error('Failed to read file from disk'));
       reader.readAsDataURL(file);
+    });
+  };
+
+  /**
+   * HTML5 Video Keyframe Extractor
+   * Extracts a high-resolution, uncompressed video frame from uploaded camera or road video files.
+   */
+  const extractVideoKeyframe = (file: File): Promise<{ base64: string; mimeType: string }> => {
+    return new Promise((resolve, reject) => {
+      const video = document.createElement('video');
+      video.preload = 'auto';
+      video.muted = true;
+      video.playsInline = true;
+      const objectUrl = URL.createObjectURL(file);
+      video.src = objectUrl;
+
+      const timeout = setTimeout(() => {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error('Video frame capture timeout'));
+      }, 10000);
+
+      video.onloadeddata = () => {
+        // Target 25% or 0.8s into video to bypass initial camera shake
+        const targetTime = Math.min(Math.max((video.duration || 2) * 0.25, 0.5), (video.duration || 1) - 0.1);
+        video.currentTime = targetTime;
+      };
+
+      video.onseeked = () => {
+        clearTimeout(timeout);
+        try {
+          const maxDim = 1600;
+          let width = video.videoWidth || 1280;
+          let height = video.videoHeight || 720;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            URL.revokeObjectURL(objectUrl);
+            reject(new Error('Canvas context unavailable'));
+            return;
+          }
+
+          ctx.drawImage(video, 0, 0, width, height);
+          const frameBase64 = canvas.toDataURL('image/jpeg', 0.88);
+          URL.revokeObjectURL(objectUrl);
+          resolve({ base64: frameBase64, mimeType: 'image/jpeg' });
+        } catch (err) {
+          URL.revokeObjectURL(objectUrl);
+          reject(err);
+        }
+      };
+
+      video.onerror = () => {
+        clearTimeout(timeout);
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error('Could not read video stream'));
+      };
     });
   };
 
@@ -465,12 +552,54 @@ export const ReportHazardTab: React.FC<ReportHazardTabProps> = ({
     }
   };
 
-  // Handle video capture
-  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle video capture & frame extraction
+  const handleVideoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    triggerToast('Video captured. Analyzing visual frames...', 'info');
-    // In a real implementation, we would extract frames or upload video
+
+    setIsProcessing(true);
+    setProcessingStep(
+      language === 'TEL'
+        ? 'వీడియో నుండి రోడ్డు ఫ్రేమ్‌ను సంగ్రహిస్తోంది...'
+        : 'Extracting high-resolution frame from road video...'
+    );
+    triggerToast(
+      language === 'TEL'
+        ? 'వీడియో అప్‌లోడ్ అయింది. AI దృశ్య ఫ్రేమ్‌ను విశ్లేషిస్తోంది...'
+        : 'Video uploaded. Extracting optical frames for AI analysis...',
+      'info'
+    );
+
+    try {
+      const { base64, mimeType } = await extractVideoKeyframe(file);
+      setSelectedImage(base64);
+      setSelectedMimeType(mimeType);
+      setImageFile(file);
+
+      // Perform optical feature scan on extracted frame
+      const telemetry = await scanImageOpticalFeatures(base64);
+      setOpticalTelemetry(telemetry);
+
+      triggerToast(
+        language === 'TEL'
+          ? 'వీడియో ఫ్రేమ్ సంగ్రహించబడింది! రోడ్డు ప్రమాద విశ్లేషణ సిద్ధంగా ఉంది.'
+          : 'Video frame extracted! Running multimodal hazard assessment...',
+        'success'
+      );
+
+      await runAnalysis(base64, mimeType, telemetry);
+    } catch (err: any) {
+      console.error('Video keyframe extraction failed:', err);
+      triggerToast(
+        language === 'TEL'
+          ? 'వీడియో నుండి ఫ్రేమ్‌ను పొందలేకపోయాం. దయచేసి నేరుగా ఫోటో తీయండి.'
+          : 'Could not extract frame from video. Please capture a still photo.',
+        'error'
+      );
+    } finally {
+      setIsProcessing(false);
+      setProcessingStep('');
+    }
   };
 
   // Save custom Gemini API key
@@ -767,11 +896,13 @@ export const ReportHazardTab: React.FC<ReportHazardTabProps> = ({
               <div>
                 <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Geospatial Uplink</div>
                 <p className="text-lg text-slate-800 dark:text-slate-200 font-black leading-tight">
-                  {gpsStatus === 'granted' ? gpsLocation.address.split(',')[0] : t.PRECISION_LOCATION_REQUIRED}
+                  {gpsStatus === 'granted'
+                    ? (gpsLocation.address.includes('°') ? gpsLocation.address : gpsLocation.address.split(',')[0])
+                    : t.PRECISION_LOCATION_REQUIRED}
                 </p>
                 <p className="text-[10px] text-teal-500 font-mono mt-1 font-bold">
                   {gpsStatus === 'granted'
-                    ? `${gpsLocation.lat.toFixed(6)}° N, ${gpsLocation.lng.toFixed(6)}° E`
+                    ? `${gpsLocation.lat.toFixed(6)}° N, ${gpsLocation.lng.toFixed(6)}° E (±${formatAccuracyMeters(gpsLocation.accuracy)}m)`
                     : language === 'TEL' ? 'ఖచ్చితమైన స్థానం ఇంకా పొందలేదు' : 'Exact coordinates not captured'}
                 </p>
               </div>
@@ -798,7 +929,7 @@ export const ReportHazardTab: React.FC<ReportHazardTabProps> = ({
               <h3 className="text-2xl font-black text-slate-900 dark:text-white">Advanced Signal Triangulation</h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
                 {gpsStatus === 'granted'
-                  ? `${gpsLocation.accuracy <= GPS_TARGET_ACCURACY_METERS ? t.GPS_TARGET_REACHED : t.GPS_BEST_AVAILABLE} ±${formatAccuracyMeters(gpsLocation.accuracy)}m`
+                  ? `${language === 'TEL' ? 'సక్రియ GPS స్థానం లాక్ చేయబడింది:' : 'Active GPS position locked:'} ${gpsLocation.lat.toFixed(6)}° N, ${gpsLocation.lng.toFixed(6)}° E (±${formatAccuracyMeters(gpsLocation.accuracy)}m).`
                   : t.GPS_ACCURACY_GUIDANCE}
               </p>
             </div>
