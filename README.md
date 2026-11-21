@@ -20,10 +20,10 @@ In coastal urban centers like Visakhapatnam (Zone 4, RK Beach Road, Gajuwaka Ind
 ## ✨ Key Features & Capabilities
 
 ### 1. 📸 Citizen Hazard Upload & Immediate Feedback
-- **Simple 1-Click Upload**: Citizens snap or upload road hazard photos safely from their smartphone camera or photo library.
+- **Simple 1-Click Upload & Video Analysis**: Citizens snap photos or record video evidence safely from their smartphone. Built-in HTML5 keyframe extraction samples optimal road surface frames for multimodal AI vision analysis.
 - **Real-Time Metadata Display (Directly Below Image)**:
   1. **Issue Status**: Live ticket tracking (e.g., *Reported • Queued for AE Inspection*), unique Ticket ID (`#VH-4092`), and an estimated repair turnaround time (*24–48 Hours*).
-  2. **Exact Location**: Live street address (e.g., *RK Beach Road, opposite INS Kursura Submarine Museum*), ward name, and GPS coordinates with accuracy readout (`±3.0m`).
+  2. **Exact Location**: Live street address (e.g., *RK Beach Road, opposite INS Kursura Submarine Museum*), ward name, and GPS coordinates with progressive fast-lock accuracy readout.
   3. **Severity & AI Sizing**: Instant severity rating (*Critical / High / Medium / Low*), composite risk score (0–100), cavity depth (cm), cavity width (cm), AI confidence (%), and engineering justification.
 
 ### 2. 🪙 Civic Coins & Coupon Rewards Marketplace
@@ -69,6 +69,10 @@ In coastal urban centers like Visakhapatnam (Zone 4, RK Beach Road, Gajuwaka Ind
 - **AI Accuracy**: **`96.4%`** defect classification precision.
 - **Active Reporters**: **`142`** active scouts and citizen contributors.
 - **Local Cache Storage & Data Reset**: Single-click `CLEAR APP DATA` utility for live demos and reset testing.
+
+### 8. 🌐 Complete Bilingual Localization (English & Telugu)
+- **1-Click Language Switcher**: Toggles seamlessly between English and Telugu (`EN` / `TEL`) across all modules.
+- **Full Municipal Coverage**: Real-time localization for the citizen upload journey, GIS map controls, municipal dispatch & work orders, and the civic rewards coupon marketplace.
 
 ---
 
